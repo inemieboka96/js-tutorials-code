@@ -1,3 +1,5 @@
 // DOM Variables
 
-//TODO: Add functionality
+// DOM Variables
+
+const passwordOutput = document.getElementById("");
