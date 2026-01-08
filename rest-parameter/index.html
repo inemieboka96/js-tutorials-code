@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rest Parameter JS - Complete Guide</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Rest Parameters in JavaScript</h1>
+            <p class="subtitle">Understanding the <code>...rest</code> Syntax</p>
+        </header>
+
+        <div class="console-alert">
+            <span class="alert-icon">🔍</span>
+            <div>
+                <strong>Press F12</strong> to open the browser console and see the rest parameters in action!
+                <br>
+                <span class="hint">All examples are logged with detailed explanations.</span>
+            </div>
+        </div>
+
+        <main>
+            <section class="info-card">
+                <h2>What are Rest Parameters?</h2>
+                <p>
+                    Rest parameters allow you to represent an <strong>indefinite number of arguments as an array</strong>. 
+                    The rest parameter syntax uses three dots (<code>...</code>) followed by a parameter name.
+                </p>
+                <div class="code-example">
+                    <code>function myFunction(<span class="highlight">...args</span>) { }</code>
+                </div>
+            </section>
+
+            <section class="info-card">
+                <h2>Key Characteristics</h2>
+                <ul>
+                    <li><strong>Collects Arguments:</strong> Bundles multiple separate elements into a single array</li>
+                    <li><strong>Must Be Last:</strong> Rest parameter must be the last parameter in the function</li>
+                    <li><strong>Creates Real Array:</strong> The result is a true array with all array methods available</li>
+                    <li><strong>Flexible Length:</strong> Can accept zero or more arguments</li>
+                </ul>
+            </section>
+
+            <section class="info-card">
+                <h2>Syntax Comparison</h2>
+                <div class="comparison">
+                    <div class="comparison-item">
+                        <h3>❌ Without Rest Parameter</h3>
+                        <code>function sum(a, b, c) { ... }</code>
+                        <p class="note">Limited to specific number of arguments</p>
+                    </div>
+                    <div class="comparison-item">
+                        <h3>✅ With Rest Parameter</h3>
+                        <code>function sum(<span class="highlight">...nums</span>) { ... }</code>
+                        <p class="note">Accepts unlimited arguments</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="info-card">
+                <h2>Examples Running in Console</h2>
+                <div class="examples-list">
+                    <div class="example-item">
+                        <span class="number">1</span>
+                        <div>
+                            <h4>openFridge()</h4>
+                            <p>Collecting food items into an array</p>
+                        </div>
+                    </div>
+                    <div class="example-item">
+                        <span class="number">2</span>
+                        <div>
+                            <h4>sum()</h4>
+                            <p>Adding unlimited numbers together</p>
+                        </div>
+                    </div>
+                    <div class="example-item">
+                        <span class="number">3</span>
+                        <div>
+                            <h4>calculateAverage()</h4>
+                            <p>Computing average of any quantity of numbers</p>
+                        </div>
+                    </div>
+                    <div class="example-item">
+                        <span class="number">4</span>
+                        <div>
+                            <h4>combineNames()</h4>
+                            <p>Joining multiple name parts into one</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="info-card">
+                <h2>When to Use Rest Parameters</h2>
+                <ul>
+                    <li>When you don't know how many arguments will be passed</li>
+                    <li>When building utility functions like sum, average, or concatenation</li>
+                    <li>When you want to handle variable-length argument lists elegantly</li>
+                    <li>When you need array methods on function arguments</li>
+                </ul>
+            </section>
+        </main>
+
+        <footer>
+            <p>Check the console (F12) to see all examples in action! 🚀</p>
+        </footer>
+    </div>
+    
+    <script src="./rest.js"></script>
+</body>
+</html>

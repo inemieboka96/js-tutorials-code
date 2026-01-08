@@ -1,0 +1,77 @@
+/* ===== Global Reset ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ===== Base Styling ===== */
+body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #1f2933, #111827);
+    color: #f9fafb;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ===== Layout ===== */
+.container {
+    max-width: 800px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+}
+
+/* ===== Typography ===== */
+h1 {
+    font-size: 2.4rem;
+    margin-bottom: 1rem;
+    color: #38bdf8;
+}
+
+h2 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #22c55e;
+}
+
+p {
+    line-height: 1.7;
+    font-size: 1.05rem;
+}
+
+.intro span {
+    color: #fbbf24;
+    font-weight: 600;
+}
+
+/* ===== List ===== */
+ul {
+    padding-left: 1.2rem;
+}
+
+li {
+    margin-bottom: 0.5rem;
+}
+
+/* ===== Console Tip ===== */
+.console-tip {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: rgba(56, 189, 248, 0.15);
+    border-left: 4px solid #38bdf8;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+kbd {
+    background: #111827;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    border: 1px solid #374151;
+}

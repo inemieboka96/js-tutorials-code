@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dice Roller Program JS</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <h1 class="title">Dice Roller Program</h1>
+
+        <div class="input-section">
+          <label for="dice-input" class="label">Number of Dice</label>
+          <input
+            type="number"
+            id="dice-input"
+            class="dice-input"
+            min="1"
+            max="6"
+            placeholder="Enter 1-6"
+          />
+        </div>
+
+        <button id="roll-button" class="roll-button">
+          <span>Roll Dice</span>
+          <span class="dice-icon">🎲</span>
+        </button>
+
+        <div class="output-section">
+          <p id="dice-output" class="dice-output">
+            Number of dice will be displayed here...
+          </p>
+          <div id="dice-images" class="dice-images">
+            Dice images will appear here
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="./dice.js"></script>
+  </body>
+</html>
