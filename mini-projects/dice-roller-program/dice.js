@@ -17,7 +17,7 @@ const dice_images = [
 
 // Function for displaying the images
 /**
- * The function `displayDiceImage` creates an image element with specified source, alt text, height,
+ * Creates an image element with specified source, alt text, height,
  * and width, and appends it to a container.
  * @param imageSrc - The `imageSrc` parameter is a string that represents the URL or path to the image
  * that you want to display in the `img` element.
@@ -26,13 +26,22 @@ function displayDiceImage(imageSrc,n) {
   const img = document.createElement("img"); // Create an img element
 
   img.src = imageSrc;
-  img.alt = `Dice ${n} Image`;
+  img.alt = `Dice ${n} Image`; // Gives the alts unique names
+  // Image dimensions
   img.height = "100";
   img.width = "100";
 
   diceImagesContainer.appendChild(img);
 }
 
+/**
+ * The function `generateRandomNum` returns a random number within a specified range.
+ * @param min - The minimum value of the range from which you want to
+ * generate a random number.
+ * @param max - The maximum value that the random number generated should not exceed.
+ * @returns The function `generateRandomNum` returns a random number between the `min` and `max` values
+ * provided as arguments.
+ */
 function generateRandomNum(min, max) {
   // Returns random no. between min & max
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -55,8 +64,8 @@ btnRoll.addEventListener("click", () => {
 
     let diceArr = []; // Init empty arr
 
+    // Loop n times
     for (let i = 0; i < diceNum; i++) {
-      // Loop n times
       // Generate random no. between 1-6
       let randomNo = generateRandomNum(1, 6);
       diceArr.push(randomNo); // Add to arr
