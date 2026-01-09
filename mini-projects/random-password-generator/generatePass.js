@@ -104,42 +104,41 @@ passwordOutput.addEventListener("click", () => {
 btnGenerate.addEventListener("click", () => {
   resetOutput();
 
-  // Validate password length
-  if (!validatePasswordLength(passwordLengthInput.value)) {
-    return;
-  }
+  // Loading message
+  passwordOutput.textContent = "Generating...";
 
-  let charSet = [...lowercaseLetters]; // Default array
+  setTimeout(() => {
+    // Validate password length
+    if (!validatePasswordLength(passwordLengthInput.value)) {
+      return;
+    }
 
-  // If these checkboxes are checked, add them to the character set arr
-  if (hasUpperCase.checked) {
-    charSet.push(...uppercaseLetters);
-  }
-  if (hasNumbers.checked) {
-    charSet.push(...numbers);
-  }
-  if (hasSymbols.checked) {
-    charSet.push(...symbols);
-  }
+    let charSet = [...lowercaseLetters]; // Default array
 
-  // Edge case: Character set is empty (shouldn't happen with default lowercase, just in case)
-  //   if (charSet.length === 0) {
-  //     displayError("No character types selected");
-  //     return;
-  //   }
+    // If these checkboxes are checked, add them to the character set arr
+    if (hasUpperCase.checked) {
+      charSet.push(...uppercaseLetters);
+    }
+    if (hasNumbers.checked) {
+      charSet.push(...numbers);
+    }
+    if (hasSymbols.checked) {
+      charSet.push(...symbols);
+    }
 
-  // Password length
-  let passwordLength = Number(passwordLengthInput.value);
+    // Password length
+    let passwordLength = Number(passwordLengthInput.value);
 
-  let generatedPassword = [];
-  let lastIndex = charSet.length - 1;
+    let generatedPassword = [];
+    let lastIndex = charSet.length - 1;
 
-  for (let i = 0; i < passwordLength; i++) {
-    generatedPassword.push(charSet[randomIndex(0, lastIndex)]);
-  }
+    for (let i = 0; i < passwordLength; i++) {
+      generatedPassword.push(charSet[randomIndex(0, lastIndex)]);
+    }
 
-  // Convert arr to string then display in DOM
-  passwordOutput.textContent = generatedPassword.join("");
+    // Convert arr to string then display in DOM
+    passwordOutput.textContent = generatedPassword.join("");
+  }, 2000);
 });
 
 // Real-time input validation
