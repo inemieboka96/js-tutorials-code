@@ -20,11 +20,11 @@
 
 console.log("------ BASIC CALLBACK EXAMPLE ------");
 
-function greet(callback) {
+function greet(callback) { // callback function arg
   console.log("Step 1: greet() function started");
   console.log("Hello!");
   console.log("Step 2: Calling callback...");
-  callback();
+  callback(); // Callback function syntax
 }
 
 function sayGoodbye() {
