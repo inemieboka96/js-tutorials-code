@@ -18,17 +18,28 @@ function randomIndex(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-const arr = [...lowercaseLetters]; // Default array
-
-
 btnGenerate.addEventListener("click", () => {
+  let charSet = [...lowercaseLetters]; // Default array
+
+  // If these checkboxes are checked, add them to the character set arr
+  if (hasUpperCase.checked) {
+    charSet.push(...uppercaseLetters);
+  }
+  if (hasNumbers.checked) {
+    charSet.push(...numbers);
+  }
+  if (hasSymbols.checked) {
+    charSet.push(...symbols);
+  }
+
   //Password length
   let passwordLength = Number(document.getElementById("password-length").value);
 
   let generatedPassword = []; // Initialize empty array
-  let lastIndex = arr.length - 1;
+  let lastIndex = charSet.length - 1;
   for (let i = 0; i < passwordLength; i++) {
-    generatedPassword.push(arr[randomIndex(0, lastIndex)]);
+    generatedPassword.push(charSet[randomIndex(0, lastIndex)]);
   }
+  // Convert arr to string then display in DOM
   passwordOutput.textContent = generatedPassword.join("");
 });
