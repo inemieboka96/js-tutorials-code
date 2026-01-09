@@ -27,18 +27,18 @@ function randomIndex(min, max) {
 
 // Display error message to user
 function displayError(message) {
-  passwordOutput.textContent = message;
-  passwordOutput.style.color = "red";
+  passwordOutput.textContent = message; // Message text
+  passwordOutput.style.color = "red"; // Error message color
 }
 
-// Reset output styling
+// Reset output
 function resetOutput() {
   passwordOutput.style.color = "";
 }
 
 // Validate password length input
 function validatePasswordLength(length) {
-  // Check if input is empty or null
+  // Edge Case: Empty or null
   if (length === "" || length === null || length === undefined) {
     displayError("Please enter a password length");
     return false;
@@ -47,25 +47,26 @@ function validatePasswordLength(length) {
   // Typecast to number
   const numLength = Number(length);
 
-  // Check if it's not a valid number
+  // Edge case: NaN
   if (isNaN(numLength)) {
     displayError("Password length must be a number");
     return false;
   }
 
-  // Check if it's not an integer
+  // Edge Case: Not integer
   if (!Number.isInteger(numLength)) {
     displayError("Password length must be a whole number");
     return false;
   }
 
-  // Check if it's below minimum
+  // Edge Case: Out of bounds
+  // Min
   if (numLength < MIN_PASSWORD_LENGTH) {
     displayError(`Password length must be at least ${MIN_PASSWORD_LENGTH}`);
     return false;
   }
 
-  // Check if it's above maximum
+  // Max
   if (numLength > MAX_PASSWORD_LENGTH) {
     displayError(`Password length cannot exceed ${MAX_PASSWORD_LENGTH}`);
     return false;
@@ -116,15 +117,9 @@ btnGenerate.addEventListener("click", () => {
     let charSet = [...lowercaseLetters]; // Default array
 
     // If these checkboxes are checked, add them to the character set arr
-    if (hasUpperCase.checked) {
-      charSet.push(...uppercaseLetters);
-    }
-    if (hasNumbers.checked) {
-      charSet.push(...numbers);
-    }
-    if (hasSymbols.checked) {
-      charSet.push(...symbols);
-    }
+    if (hasUpperCase.checked) charSet.push(...uppercaseLetters);
+    if (hasNumbers.checked) charSet.push(...numbers);
+    if (hasSymbols.checked) charSet.push(...symbols);
 
     // Password length
     let passwordLength = Number(passwordLengthInput.value);
