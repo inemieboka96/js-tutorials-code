@@ -40,7 +40,7 @@ function resetOutput() {
 function validatePasswordLength(length) {
   // Check if input is empty or null
   if (length === "" || length === null || length === undefined) {
-    displayError("Error: Please enter a password length");
+    displayError("Please enter a password length");
     return false;
   }
 
@@ -49,31 +49,58 @@ function validatePasswordLength(length) {
 
   // Check if it's not a valid number
   if (isNaN(numLength)) {
-    displayError("Error: Password length must be a number");
+    displayError("Password length must be a number");
     return false;
   }
 
   // Check if it's not an integer
   if (!Number.isInteger(numLength)) {
-    displayError("Error: Password length must be a whole number");
+    displayError("Password length must be a whole number");
     return false;
   }
 
   // Check if it's below minimum
   if (numLength < MIN_PASSWORD_LENGTH) {
-    displayError(`Error: Password length must be at least ${MIN_PASSWORD_LENGTH}`);
+    displayError(`Password length must be at least ${MIN_PASSWORD_LENGTH}`);
     return false;
   }
 
   // Check if it's above maximum
   if (numLength > MAX_PASSWORD_LENGTH) {
-    displayError(`Error: Password length cannot exceed ${MAX_PASSWORD_LENGTH}`);
+    displayError(`Password length cannot exceed ${MAX_PASSWORD_LENGTH}`);
     return false;
   }
 
   return true;
 }
 
+// Copy to Clipboard functionality
+passwordOutput.addEventListener("click", () => {
+  // If password is generated with no error messages
+  if (
+    passwordOutput.textContent !== "" &&
+    passwordOutput.style.color !== "red"
+  ) {
+    // Copy generated password to clipboard
+    navigator.clipboard
+      .writeText(passwordOutput.textContent)
+      .then(() => {
+        // Visual feedback
+        const originalText = passwordOutput.textContent; // Store generated password in a temp variable
+        passwordOutput.textContent = "Copied! ✓";
+        // Return back to OG text after 1 second
+        setTimeout(() => {
+          passwordOutput.textContent = originalText;
+        }, 1000);
+      })
+      // Catch any errors
+      .catch((err) => {
+        console.error("Failed to Copy: ", err);
+      });
+  }
+});
+
+// Password Generation
 btnGenerate.addEventListener("click", () => {
   resetOutput();
 
@@ -95,36 +122,36 @@ btnGenerate.addEventListener("click", () => {
     charSet.push(...symbols);
   }
 
-  // Edge case: Character set is empty (shouldn't happen with default lowercase, but good to check)
-  if (charSet.length === 0) {
-    displayError("Error: No character types selected");
-    return;
-  }
+  // Edge case: Character set is empty (shouldn't happen with default lowercase, just in case)
+  //   if (charSet.length === 0) {
+  //     displayError("No character types selected");
+  //     return;
+  //   }
 
   // Password length
   let passwordLength = Number(passwordLengthInput.value);
 
   let generatedPassword = [];
   let lastIndex = charSet.length - 1;
-  
+
   for (let i = 0; i < passwordLength; i++) {
     generatedPassword.push(charSet[randomIndex(0, lastIndex)]);
   }
-  
+
   // Convert arr to string then display in DOM
   passwordOutput.textContent = generatedPassword.join("");
 });
 
-// Optional: Add real-time input validation
+// Real-time input validation
 passwordLengthInput.addEventListener("input", () => {
   const value = passwordLengthInput.value;
   const numValue = Number(value);
-  
+
   // Prevent negative numbers
   if (numValue < 0) {
     passwordLengthInput.value = Math.abs(numValue);
   }
-  
+
   // Cap at maximum
   if (numValue > MAX_PASSWORD_LENGTH) {
     passwordLengthInput.value = MAX_PASSWORD_LENGTH;
