@@ -63,8 +63,8 @@ const testUsers = [
   { name: "Oliver", age: 21 }, { name: "Benjamin", age: 25 }, { name: "Henry", age: 30 },
   { name: "Daniel", age: 40 },
 ];
-const adults = testUsers.filter(u => u.age >= 18);
-const kids = testUsers.filter(u => u.age < 18);
+const adults = testUsers.filter(user => user.age >= 18);
+const kids = testUsers.filter(user => user.age < 18);
 logResult("Adults", adults);
 logResult("Kids", kids);
 
