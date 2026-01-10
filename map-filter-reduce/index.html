@@ -3,11 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>map(), filter() & reduce() Function</title>
+    <title>map(), filter() & reduce() in JavaScript</title>
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <h1>map(), filter() & reduce() Function</h1>
+    <div class="container">
+        <h1>Understanding <span>map()</span>, <span>filter()</span> & <span>reduce()</span></h1>
+        
+        <section>
+            <h2>1. map()</h2>
+            <p><strong>Syntax:</strong> <code>array.map((element, index, array) => { /* transformation */ })</code></p>
+            <p><strong>Use Cases:</strong> Transform array elements, extract data, format values.</p>
+        </section>
+
+        <section>
+            <h2>2. filter()</h2>
+            <p><strong>Syntax:</strong> <code>array.filter((element, index, array) => { /* condition */ })</code></p>
+            <p><strong>Use Cases:</strong> Remove unwanted items, select elements conditionally.</p>
+        </section>
+
+        <section>
+            <h2>3. reduce()</h2>
+            <p><strong>Syntax:</strong> <code>array.reduce((accumulator, currentValue, index, array) => { /* return accumulator */ }, initialValue)</code></p>
+            <p><strong>Use Cases:</strong> Sum values, flatten arrays, group objects, count occurrences.</p>
+        </section>
+
+        <div class="console-note">
+            ⚡ Open your browser console by pressing <strong>F12</strong> to see live examples with colored logs!
+        </div>
+    </div>
+
     <script src="./mfr.js"></script>
 </body>
 </html>
