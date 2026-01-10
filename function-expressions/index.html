@@ -7,7 +7,86 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <h1>Function Expressions in JS</h1>
+    <div class="container">
+        <h1 class="main-title">📚 Function Expressions in JavaScript</h1>
+        
+        <div class="console-alert">
+            <div class="icon">🔍</div>
+            <div class="alert-content">
+                <strong>Press F12</strong> (or <strong>Cmd+Option+I</strong> on Mac) to open the Developer Console and view the interactive examples and logs!
+            </div>
+        </div>
+
+        <section class="content-section">
+            <h2><span class="emoji">💡</span> What are Function Expressions?</h2>
+            <p>
+                A <span class="highlight">function expression</span> is a way to define a function as a value or assign it to a variable. 
+                Unlike function declarations, function expressions are not hoisted and can be anonymous or named.
+            </p>
+            <div class="code-snippet">
+                <code>
+const greet = function(name) {<br>
+&nbsp;&nbsp;return `Hello, ${name}!`;<br>
+};
+                </code>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2><span class="emoji">🎯</span> Key Characteristics</h2>
+            <ul class="feature-list">
+                <li><strong>First-Class Citizens:</strong> Functions can be assigned to variables, passed as arguments, and returned from other functions</li>
+                <li><strong>Anonymous or Named:</strong> Can be defined without a name (anonymous) or with a name for recursion/debugging</li>
+                <li><strong>Not Hoisted:</strong> Unlike function declarations, they must be defined before use</li>
+                <li><strong>Flexible Syntax:</strong> Includes arrow functions for concise code</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2><span class="emoji">🚀</span> Common Use Cases</h2>
+            
+            <div class="use-case-grid">
+                <div class="use-case-card">
+                    <div class="card-icon">📊</div>
+                    <h3>Array Methods</h3>
+                    <p>Transform, filter, and reduce data with map, filter, and reduce</p>
+                </div>
+                <div class="use-case-card">
+                    <div class="card-icon">⏱️</div>
+                    <h3>Callbacks</h3>
+                    <p>Handle asynchronous operations and event listeners</p>
+                </div>
+                <div class="use-case-card">
+                    <div class="card-icon">🎨</div>
+                    <h3>Higher-Order Functions</h3>
+                    <p>Create functions that accept or return other functions</p>
+                </div>
+                <div class="use-case-card">
+                    <div class="card-icon">🔒</div>
+                    <h3>Closures</h3>
+                    <p>Maintain private state and create data encapsulation</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2><span class="emoji">📝</span> Examples in Console</h2>
+            <p>Check the console to see examples of:</p>
+            <ul class="feature-list">
+                <li>Array transformations (map, filter, reduce)</li>
+                <li>Callback functions and event handlers</li>
+                <li>Higher-order functions and function factories</li>
+                <li>Closures and private variables</li>
+                <li>IIFE (Immediately Invoked Function Expressions)</li>
+                <li>Practical real-world scenarios</li>
+            </ul>
+        </section>
+
+        <footer class="page-footer">
+            Built with ❤️ to demonstrate JavaScript Function Expressions
+        </footer>
+    </div>
+
     <script src="./func-expression.js"></script>
 </body>
 </html>
