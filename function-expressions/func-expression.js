@@ -124,9 +124,12 @@ const sum = numbers.reduce((acc, current) => acc + current, 0);
 const product = numbers.reduce((acc, curr) => acc * curr, 1);
 const max = numbers.reduce((acc, curr) => curr > acc ? curr : acc);
 const min = numbers.reduce((acc, curr) => curr < acc ? curr : acc);
-const average = numbers.reduce((acc, curr, idx, arr) => {
-    acc += curr;
-    return idx === arr.length - 1 ? acc / arr.length : acc;
+const average = numbers.reduce((acc, curr, index, arr) => {
+    acc += curr; // Calculate sum
+    if (index === arr.length - 1) {
+    return acc / arr.length;
+}
+return acc;
 }, 0);
 
 console.log('%c  → Sum:', styles.lime, sum);
@@ -163,9 +166,9 @@ console.log('%cHighly Rated (≥4.5):', styles.cyan, highlyRated);
 console.log('%cAffordable Electronics (<$500):', styles.teal, affordableElectronics);
 
 // Reduce calculations
-const totalPrice = products.reduce((sum, p) => sum + p.price, 0);
+const totalPrice = products.reduce((sum, product) => sum + product.price, 0);
 const avgPrice = totalPrice / products.length;
-const avgRating = products.reduce((sum, p) => sum + p.rating, 0) / products.length;
+const avgRating = products.reduce((sum, product) => sum + product.rating, 0) / products.length;
 
 console.log('\n%c💰 Financial Summary:', styles.amber);
 console.log(`  Total Inventory Value: $${totalPrice}`);
@@ -192,11 +195,11 @@ fetchUserData(123, (data) => {
 });
 
 // Simulated database query
-const queryDatabase = (query, successCallback, errorCallback) => {
+const queryDatabase = (query, onSuccess, errorCallback) => {
     console.log(`%c  → Executing query: "${query}"`, styles.warning);
     setTimeout(() => {
         if (query.includes('SELECT')) {
-            successCallback({ rows: 5, data: ['Record 1', 'Record 2', 'Record 3'] });
+            onSuccess({ rows: 5, data: ['Record 1', 'Record 2', 'Record 3'] });
         } else {
             errorCallback('Invalid query syntax');
         }
