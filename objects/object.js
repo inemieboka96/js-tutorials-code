@@ -223,6 +223,6 @@ const company = {
 // Company's city
 console.log(`Company's City: ${company.address.city}`);
 // Company's first employee's name
-console.log(`Company's City: ${company.employees[0].name}`);
+console.log(`Company's City: ${company.employees[0].name}`);  
 
 // Exercises
