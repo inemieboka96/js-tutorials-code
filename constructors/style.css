@@ -6,4 +6,255 @@
 
 html {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    scroll-behavior: smooth;
+}
+
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: #333;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Header Styles */
+.header {
+    background: white;
+    border-radius: 15px;
+    padding: 40px 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    animation: slideDown 0.6s ease-out;
+}
+
+.header h1 {
+    font-size: 3em;
+    color: #667eea;
+    margin-bottom: 10px;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+.header .subtitle {
+    font-size: 1.2em;
+    color: #666;
+    margin-bottom: 25px;
+    font-weight: 300;
+}
+
+/* Console Hint */
+.console-hint {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+    animation: pulse 2s infinite;
+}
+
+.hint-icon {
+    font-size: 1.5em;
+}
+
+.console-hint kbd {
+    background: rgba(255, 255, 255, 0.3);
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Section Styles */
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.section {
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.section:nth-child(1) { animation-delay: 0.1s; }
+.section:nth-child(2) { animation-delay: 0.2s; }
+.section:nth-child(3) { animation-delay: 0.3s; }
+.section:nth-child(4) { animation-delay: 0.4s; }
+
+.section h2 {
+    font-size: 2em;
+    color: white;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Card Styles */
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    border-left: 5px solid #667eea;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    border-left-color: #764ba2;
+}
+
+.card h3 {
+    font-size: 1.5em;
+    color: #667eea;
+    margin-bottom: 10px;
+}
+
+.card p {
+    line-height: 1.8;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.description {
+    font-size: 1.05em;
+    color: #666;
+    font-weight: 500;
+}
+
+code {
+    background: #f4f4f4;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #e83e8c;
+    font-family: 'Courier New', monospace;
+}
+
+/* Code Block */
+.code-block {
+    background: #2d2d2d;
+    color: #f8f8f2;
+    padding: 15px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 15px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.95em;
+    line-height: 1.6;
+}
+
+.code-block pre {
+    margin: 0;
+}
+
+.code-block code {
+    color: #f8f8f2;
+    background: none;
+    padding: 0;
+}
+
+/* Note Style */
+.note {
+    background: #e7f3ff;
+    border-left: 4px solid #2196F3;
+    padding: 12px 15px;
+    border-radius: 5px;
+    color: #1565c0;
+    font-size: 0.95em;
+    margin-top: 15px;
+}
+
+.intro-section .card {
+    border-left-color: #f5576c;
+    font-size: 1.1em;
+    font-weight: 500;
+    color: #555;
+}
+
+/* Footer Note */
+.footer-note {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    color: #667eea;
+    font-weight: 600;
+    margin-top: 40px;
+    animation: fadeInUp 1s ease-out;
+}
+
+/* Animations */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.85;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header {
+        padding: 30px 20px;
+    }
+
+    .header h1 {
+        font-size: 2em;
+    }
+
+    .header .subtitle {
+        font-size: 1em;
+    }
+
+    .section h2 {
+        font-size: 1.5em;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    .card h3 {
+        font-size: 1.2em;
+    }
+
+    .console-hint {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .code-block {
+        font-size: 0.85em;
+    }
 }
