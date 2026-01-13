@@ -48,12 +48,8 @@ const shoppingCart = {
     console.log(`${product} has been added to the shopping cart`);
   },
   getItemCount() {
-    let count = 0; // Initialize count
-    for (let i = 0; i < this.items.length; i++) {
-      // Iterate n times
-      count++; // Increment count
-    }
-    console.log(`No. of items: ${count}`);
+    // Simplified the logic
+    console.log(`No. of items: ${this.items.length}`);
   },
 };
 // Console logs
@@ -129,7 +125,8 @@ const library = {
   },
   returnBook(title) {
     for (const book of this.books) {
-      if (book.title === title) { // Book is found
+      if (book.title === title) {
+        // Book is found
         // Edge Case: Book is already available
         if (book.isAvailable === true) {
           console.log(`[ ${title} hasn't been borrowed ]`);
@@ -214,7 +211,7 @@ const bankAccount = {
     if (amount > this.balance) {
       return "Insufficient funds.";
     }
-    this.balance -= amount;
+    this.balance = Math.round((this.balance - amount) * 100) / 100; // updated deduction formula
     return `${USDollar.format(
       amount
     )} has been deducted. Current balance: ${USDollar.format(this.balance)}`;
@@ -242,11 +239,16 @@ const bankAccount = {
       throw new Error("Transfer amount must be greater than zero.");
     }
 
-    this.withdraw(amount); // Deduct amount from current balance
-    targetAccount.deposit(amount);
-    return `${USDollar.format(amount)} has been transferred to ${
-      targetAccount.owner
-    }'s account`;
+    //Wrap in a try catch
+    try {
+      this.withdraw(amount); // Deduct amount from current balance
+      targetAccount.deposit(amount);
+      return `${USDollar.format(amount)} has been transferred to ${
+        targetAccount.owner
+      }'s account`;
+    } catch (error) {
+      throw new Error(`Transfer FAILED: ${error.message}`);
+    }
   },
 };
 
@@ -302,11 +304,11 @@ console.log(
 );
 
 // Log all employee names from all departments in a single array
-totalCompanyEmployees = [];
+let totalCompanyEmployees = []; // FIXED: Added missing let keyword
 
 for (let key in depts) {
   let dept = depts[key];
-  totalCompanyEmployees.push(dept.employees);
+  totalCompanyEmployees.push(...dept.employees); // FIXED: No longer a nested array by using the spread operator
 }
 
 console.log(`Total Company Employees: ${totalCompanyEmployees}`);
@@ -319,16 +321,19 @@ const obj3 = { name: "John", age: 25 };
 function compareObjects(obj1, obj2) {
   // Store obj arrays in variables
   const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+
+  // Check if their no. of properties match
+  if(keys1.length !== keys2.length) return false;
 
   for (let key of keys1) {
     // Loop through the first arr
-    if (obj1[key] == obj2[key]) {
-      // Check if all the values in the array match
-      return true;
+    if (obj1[key] !== obj2[key]) { // if any values don't match
+      return false;
     }
   }
 
-  return false; // If they don't
+  return true; // If they do
 }
 
 console.log(compareObjects(obj1, obj2));
@@ -370,7 +375,7 @@ const gradeBook = {
 
     const gradeSum = student.grades.reduce((acc, current) => acc + current, 0); // Calc sum
     const avg = gradeSum / student.grades.length;
-    return avg.toFixed(1);
+    return parseFloat(avg.toFixed(1));
   },
   getClassAverage() {
     // Loop over all the student's and calculate their individual average
@@ -381,7 +386,7 @@ const gradeBook = {
     ); // Output: [1st student's avg, 2nd student's avg,...]
     const classAvg =
       studentAvgs.reduce((a, b) => a + b, 0) / studentAvgs.length;
-    return classAvg.toFixed(1);
+    return parseFloat(classAvg.toFixed(1));
   },
 
   getTopStudent() {
@@ -409,7 +414,7 @@ const gradeBook = {
         topStudent = student.name;
       }
     }
-    return `Top Student: ${topStudent} | Grade Average: ${topStudentAvg.toFixed(1)}`;
+    return `Top Student: ${topStudent} | Grade Average: ${parseFloat(topStudentAvg.toFixed(1))}`;
   },
 };
 
