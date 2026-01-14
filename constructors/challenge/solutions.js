@@ -149,14 +149,14 @@ class ShoppingCart {
 
   removeItem(name) {
     let found = false; // flag to track if the item was removed
-    for (let i=0;i<this.items.length;i++) {
-        const item = this.items[i];
-        if (item.name === name) {
-            this.items.splice(i,1); // Remove item at specific index
-            console.log(`[ ${item.name} has been removed from cart ]`);
-            found = true;
-            break;
-        }
+    for (let i = 0; i < this.items.length; i++) {
+      const item = this.items[i];
+      if (item.name === name) {
+        this.items.splice(i, 1); // Remove item at specific index
+        console.log(`[ ${item.name} has been removed from cart ]`);
+        found = true;
+        break;
+      }
     }
     if (!found) console.log(`${item.name} not found`);
   }
@@ -164,12 +164,12 @@ class ShoppingCart {
   getTotal() {
     let prices = []; // Initialize empty arr
 
-    for (let i=0;i<this.items.length;i++) {
-        const item = this.items[i];
-        prices.push(item.price); // Add item price to arr
+    for (let i = 0; i < this.items.length; i++) {
+      const item = this.items[i];
+      prices.push(item.price); // Add item price to arr
     }
 
-    const total = prices.reduce((total,sum) => total + sum,0); // Calc sum
+    const total = prices.reduce((total, sum) => total + sum, 0); // Calc sum
     return total;
   }
 }
@@ -178,9 +178,9 @@ titleLog("Shopping Cart Details");
 const cart = new ShoppingCart(); // Initialize empty cart
 
 // Adding 3 items to cart
-cart.addItem("Beef",20);
-cart.addItem("Fish",10);
-cart.addItem("Milk",5);
+cart.addItem("Beef", 20);
+cart.addItem("Fish", 10);
+cart.addItem("Milk", 5);
 
 // Calculate Total
 console.log(`Total: $${cart.getTotal()}`);
@@ -190,4 +190,61 @@ cart.removeItem("Milk");
 console.log(`Total after removing milk: $${cart.getTotal()}`);
 
 // Advanced
-//TODO: Complete the advanced problems tomorrow
+
+// Problem 7: Task Manager
+class Task {
+  constructor(title = "Untitled Task", description) {
+    this.title = title;
+    this.description = description;
+    // Default
+    this.completed = false;
+    this.createdAt = new Date(); // Current Date
+  }
+
+  markAsCompleted() {
+    this.completed = true;
+  }
+
+  getTitle() {
+    return this.title;
+  }
+
+  getDescription() {
+    return this.description;
+  }
+
+  getStatus() {
+    return this.completed ? "Complete" : "Incomplete";
+  }
+
+  isOverdue() {
+    // Edge Case: Completed Task
+    if (this.completed) return false;
+
+    const currentDate = Date.now(); // Keep track of current date in ms
+    // Calc time diff
+    const timeDifference = currentDate - +this.createdAt;
+    // Get 7 days in milliseconds
+    const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
+
+    return timeDifference > sevenDaysInMs;
+  }
+}
+
+const task = new Task(
+  "Complete Assignment",
+  "Finish coding problem set before Saturday"
+);
+
+// Console Output
+titleLog("Task Manager Details");
+console.log(`Task: ${task.getTitle()}`);
+console.log(`Status: ${task.getStatus()}`);
+console.log(`Is Overdue ?: ${task.isOverdue()}`);
+console.log();
+console.log(`Task: ${task.getTitle()}`);
+task.markAsCompleted();
+console.log(`Status: ${task.getStatus()}`);
+
+// Problem 8: Inheritance Problem
+// TODO: Complete tomorrow
