@@ -218,13 +218,13 @@ class Task {
   }
 
   isOverdue() {
-    // Edge Case: Completed Task
+    // Edge Case: Completed tasks cannot be overdue
     if (this.completed) return false;
 
-    const currentDate = Date.now(); // Keep track of current date in ms
-    // Calc time diff
-    const timeDifference = currentDate - +this.createdAt;
-    // Get 7 days in milliseconds
+    const currentDate = Date.now(); // Current time in milliseconds
+    const timeDifference = currentDate - this.createdAt.getTime();
+
+    // 7 days in milliseconds
     const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
 
     return timeDifference > sevenDaysInMs;
