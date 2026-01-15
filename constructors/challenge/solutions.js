@@ -88,9 +88,8 @@ console.log(`Circumference: ${c5.getCircumference()}`);
 
 // Problem 5: Counter Object
 class Counter {
-  constructor(count = 0) {
-    // Default value
-    this.count = count;
+  constructor(count) {
+    this.count = 0; // Always initialize at 0
   }
 
   increment() {
@@ -158,19 +157,12 @@ class ShoppingCart {
         break;
       }
     }
-    if (!found) console.log(`${item.name} not found`);
+    if (!found) console.log(`${name} not found`); // FIX: removed the 'undefined' bug
   }
 
   getTotal() {
-    let prices = []; // Initialize empty arr
-
-    for (let i = 0; i < this.items.length; i++) {
-      const item = this.items[i];
-      prices.push(item.price); // Add item price to arr
-    }
-
-    const total = prices.reduce((total, sum) => total + sum, 0); // Calc sum
-    return total;
+    // OPTIMIZED: removed the price array and for loop
+    return this.items.reduce((total, item) => total + item.price, 0);
   }
 }
 
@@ -356,17 +348,18 @@ console.log(`Direct access to balance: ${account.balance}`);
 // Problem 10: Factory with Validation
 class User {
   constructor(email, age) {
+    // FIX: Implemented proper parameter validation
+    // Validate email
+    if (!email.includes("@") || !email.includes(".")) {
+      throw new Error("Invalid Email format");
+    }
+    // Validate age
+    if (age < 13) {
+      throw new Error("Age must be at least 13");
+    }
+
     this.email = email;
     this.age = age;
-  }
-
-  validateUser() {
-    if (!this.email.includes("@") && !this.email.includes(".")) {
-      console.log("Error: Invalid Email format");
-    }
-    if (this.age < 13) {
-      console.log("Error: Age must be at least 13");
-    }
   }
 
   isAdult() {
