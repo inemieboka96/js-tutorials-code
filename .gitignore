@@ -3,3 +3,11 @@ node_modules/
 dist/
 build/
 npm-debug.log
+
+# Ignore common image formats
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.webp
