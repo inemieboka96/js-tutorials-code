@@ -247,4 +247,139 @@ task.markAsCompleted();
 console.log(`Status: ${task.getStatus()}`);
 
 // Problem 8: Inheritance Problem
-// TODO: Complete tomorrow
+class Vehicle {
+  constructor(make, year) {
+    this.make = make;
+    this.year = year;
+  }
+
+  getMake() {
+    return this.make;
+  }
+
+  getYear() {
+    return this.year;
+  }
+}
+
+class Motorcycle extends Vehicle {
+  constructor(make, year, type) {
+    super(make, year);
+    this.type = type;
+  }
+
+  // Unique method
+  getType() {
+    return this.type;
+  }
+}
+
+titleLog("Vehicle Details");
+const v1 = new Motorcycle("Harley-Davidson", 2020, "Sport");
+const v2 = new Motorcycle("Honda", 2022, "Cruiser");
+
+console.log(`${v1.getYear()} ${v1.getMake()} ${v1.getType()}`);
+console.log(`${v2.getYear()} ${v2.getMake()} ${v2.getType()}`);
+
+// Problem 9: Private Variables
+const USDollar = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
+
+class BankAccount {
+  #balance; // Private Field
+
+  constructor(balance) {
+    this.#balance = balance;
+  }
+
+  getBalance() {
+    return this.#balance;
+  }
+
+  deposit(amount) {
+    const MAX_DEPOSIT = 10_000_000; // $10,000,000
+
+    // Edge Case: Invalid input
+    if (!Number.isFinite(amount)) {
+      throw new TypeError("Invalid amount");
+    }
+    // Edge Case: Negative no.
+    if (amount <= 0) {
+      throw new RangeError("Amount deposited must be greater than $0");
+    }
+    // Edge Case: exceeds limit
+    if (amount > MAX_DEPOSIT) {
+      throw new RangeError("Amount exceeds account deposit limit");
+    }
+
+    const balanceCents = Math.round(this.#balance * 100);
+    const amountCents = Math.round(amount * 100);
+
+    this.#balance = (balanceCents + amountCents) / 100;
+    return `Deposited $${amount.toFixed(2)}`;
+  }
+
+  withdraw(amount) {
+    // Edge Case: Invalid input
+    if (!Number.isFinite(amount)) {
+      throw new TypeError("Invalid amount");
+    }
+    // Edge Case: Negative No.
+    if (amount <= 0) {
+      throw new RangeError("Withdrawal amount must be greater than $0");
+    }
+    // Convert currency to cents
+    const amountCents = Math.round(amount * 100);
+    const balanceCents = Math.round(this.#balance * 100);
+    // Edge Case: Overdraft
+    if (amountCents > balanceCents) {
+      throw new RangeError("Cannot withdraw amount greater than balance");
+    }
+    // Formula accounts for cents
+    this.#balance = (balanceCents - amountCents) / 100;
+
+    return `Withdrew $${amount.toFixed(2)}`;
+  }
+}
+
+titleLog("Bank Account Details");
+const account = new BankAccount(1000); // $1,000
+console.log(`Current Balance: $${account.getBalance().toFixed(2)}`);
+console.log(account.deposit(500));
+console.log(`Current Balance: $${account.getBalance().toFixed(2)}`);
+console.log(account.withdraw(300));
+console.log(`Current Balance: $${account.getBalance().toFixed(2)}`);
+console.log(`Direct access to balance: ${account.balance}`);
+
+// Problem 10: Factory with Validation
+class User {
+  constructor(email, age) {
+    this.email = email;
+    this.age = age;
+  }
+
+  validateUser() {
+    if (!this.email.includes("@") && !this.email.includes(".")) {
+      console.log("Error: Invalid Email format");
+    }
+    if (this.age < 13) {
+      console.log("Error: Age must be at least 13");
+    }
+  }
+
+  isAdult() {
+    return this.age >= 18 ? true : false;
+  }
+}
+
+titleLog("User Details");
+const user = new User("john@example.com", 12);
+console.log(`User Created: ${user.email}`);
+user.email = "john";
+user.validateUser();
+user.age = 22;
+console.log(`Is adult: ${user.isAdult()}`);
+user.age = 11;
+console.log(`Is adult: ${user.isAdult()}`);
