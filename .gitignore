@@ -1,3 +1,4 @@
+# Standard files to ignore
 node_modules/
 .env
 dist/

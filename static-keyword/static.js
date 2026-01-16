@@ -31,7 +31,7 @@
   Key Point:
       Static members are tied to the class itself, not to individual objects.
 */
-// - Console Log Title
+//  Console Log Title
 const titleLog = (message) => {
   const line = "=".repeat(message.length + 8); // adjusts length dynamically
   console.log(`\n${line} ${message.toUpperCase()} ${line}\n`);
