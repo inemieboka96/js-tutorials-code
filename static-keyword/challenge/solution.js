@@ -23,7 +23,7 @@ class Spell {
   }
 }
 
-titleLog("Spell Registry Details");
+titleLog("Spell Registry Console Logs");
 const spells = [
   new Spell("Fireball", 50),
   new Spell("Ice Blast", 40),
@@ -63,7 +63,7 @@ class Potion {
   }
 }
 
-titleLog("Potion Factory Details");
+titleLog("Potion Factory Console Logs");
 
 const potions = [
   Potion.createHealthPotion("Minor Health Potion"),
@@ -87,7 +87,7 @@ class Weapon {
   }
 }
 
-titleLog("Damage Calculator Details");
+titleLog("Damage Calculator Console Logs");
 
 const weaponLogs = [
   {
@@ -132,7 +132,7 @@ class Hero {
   }
 }
 
-titleLog("Heroes Details");
+titleLog("Heroes Console Logs");
 const heroes = [
   new Hero("Aragorn", "Warrior"),
   new Hero("Gandalf", "Mage"),
@@ -186,7 +186,7 @@ class Monster {
   }
 }
 
-titleLog("Monster Details");
+titleLog("Monster Console Logs");
 const monsters = [
   new Monster("Dwarf", "Humanoid", 50, 6),
   new Monster("Goblin", "Humanoid", 35, 3),
@@ -201,7 +201,7 @@ Monster.findByType("Fire");
 // Problem 6: Guild Validator
 class Guild {
   constructor(name, leaderLevel, treasury) {
-    // Validations
+    // Validation
     if (!Guild.isValidGuildName(name))
       throw new Error("Guild name must be at 3-20 characters");
     if (!Guild.meetsLevelRequirements(leaderLevel))
@@ -227,7 +227,7 @@ class Guild {
   }
 }
 
-titleLog("Guild Details");
+titleLog("Guild Console Logs");
 const dragonSlayers = new Guild("Dragon Slayers", 12, 10001);
 
 console.log(`Guild Created: ${dragonSlayers.name}`);
@@ -247,4 +247,135 @@ rejectedGuildData.forEach(([name, level, gold]) => {
 });
 
 // Advanced Level
-// TODO: Complete tomorrow. got tired :(
+// Problem 7: Element Effectiveness System
+
+class Element {
+  static ELEMENTS = ["Fire", "Ice", "Lightning", "Earth"];
+  // Static Method
+  static isValidElement(element) {
+    return this.ELEMENTS.includes(element);
+  }
+
+  static getEffectiveness(attackElement, defenseElement) {
+    // Element Validation
+    if (!Element.isValidElement(attackElement))
+      throw new Error("Invalid Attack Element");
+    if (!Element.isValidElement(defenseElement))
+      throw new Error("Invalid Defense Element");
+    if (
+      !Element.isValidElement(attackElement) &&
+      !Element.isValidElement(defenseElement)
+    )
+      throw new Error("Invalid Attack & Defense Element");
+    // Edge Case: Same element
+    if (attackElement === defenseElement) {
+      return "0.5x";
+    }
+    if (attackElement === "Fire" && defenseElement === "Ice") {
+      return "2x";
+    }
+    if (attackElement === "Ice" && defenseElement === "Earth") {
+      return "2x";
+    }
+    if (attackElement === "Earth" && defenseElement === "Lightning") {
+      return "2x";
+    }
+    if (attackElement === "Lightning" && defenseElement === "Fire") {
+      return "2x";
+    }
+    return "1x";
+  }
+}
+
+titleLog("Element Console Logs");
+// Element Match Ups
+const matchups = [
+  ["Fire", "Ice"],
+  ["Ice", "Fire"],
+  ["Fire", "Fire"],
+  ["Lightning", "Earth"],
+  ["Fire", "Earth"],
+];
+
+matchups.forEach(([att, def]) => {
+  console.log(`${att} vs ${def}: ${Element.getEffectiveness(att, def)} damage`);
+});
+
+// Problem 8: Dungeon Instance Manager
+class Dungeon {
+  static activeDungeons = [];
+  static maxDungeons = 5;
+  static nextId = 1;
+
+  constructor(name, difficulty) {
+    this.id = Dungeon.nextId++;
+    this.name = name;
+    this.difficulty = difficulty;
+    this.createdAt = new Date();
+
+    Dungeon.activeDungeons.push(this); // Add to active list
+  }
+
+  // Static Methods
+  static createInstance(name, difficulty) {
+    // Edge Case: MAX DUNGEONS
+    if (this.activeDungeons.length >= this.maxDungeons) {
+      throw new RangeError("Max no. of dungeons reached!!");
+    }
+    const newDungeon = new Dungeon(name, difficulty);
+    console.log(
+      `Dungeon created: ${newDungeon.name} (${newDungeon.difficulty}) - ID: ${newDungeon.id}`
+    );
+  }
+
+  static closeInstance(dungeonId) {
+    const foundIdx = this.activeDungeons.findIndex((d) => d.id === dungeonId);
+
+    // Edge Case: Not Found
+    if (foundIdx === -1) {
+      throw new Error("Dungeon ID not found");
+    }
+
+    const foundDungeon = this.activeDungeons[foundIdx];
+    console.log(`Dungeon closed: ${foundDungeon.name}`);
+    this.activeDungeons.splice(foundIdx, 1); // Remove from arr
+  }
+
+  static getActiveCount() {
+    return this.activeDungeons.length;
+  }
+
+  static findByDifficulty(difficulty) {
+    const filteredDiff = this.activeDungeons.filter(
+      (d) => d.difficulty === difficulty
+    );
+
+    if (filteredDiff.length === 0) {
+      throw new Error(`No ${difficulty} dungeons present`);
+    }
+    return filteredDiff;
+  }
+}
+titleLog("Dungeon Console Logs");
+// Difficulty Enums
+const difficulty = Object.freeze({
+  EASY: "Easy",
+  NORMAL: "Normal",
+  HARD: "Hard",
+});
+
+const dungeonDetails = [
+  ["Shadow Crypt", difficulty.EASY],
+  ["Dragon's Lair", difficulty.HARD],
+];
+
+dungeonDetails.forEach(([name, diff]) => {
+  Dungeon.createInstance(name, diff);
+});
+
+console.log(`Active Dungeons: ${Dungeon.getActiveCount()}`);
+console.log(
+  `Hard Dungeon: ${Dungeon.findByDifficulty(difficulty.HARD).length}`
+);
+Dungeon.closeInstance(1);
+console.log(`Active Dungeons: ${Dungeon.getActiveCount()}`);
