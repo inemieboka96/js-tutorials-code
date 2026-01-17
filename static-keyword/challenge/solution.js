@@ -71,7 +71,7 @@ const potions = [
 ];
 
 potions.forEach((potion) =>
-  console.log(`Used ${potion.name}: ${potion.use()}`)
+  console.log(`Used ${potion.name}: ${potion.use()}`),
 );
 
 // Problem 4: Damage Calculator
@@ -127,7 +127,7 @@ class Hero {
 
   displayInfo() {
     console.log(
-      `Hero Created: ${this.name} (ID: ${this.id}) - ${this.rpgClass}`
+      `Hero Created: ${this.name} (ID: ${this.id}) - ${this.rpgClass}`,
     );
   }
 }
@@ -165,7 +165,7 @@ class Monster {
 
     if (found) {
       console.log(
-        `Found monster: ${found.name} (Type: ${found.type}, Level: ${found.level})`
+        `Found monster: ${found.name} (Type: ${found.type}, Level: ${found.level})`,
       );
     } else {
       console.log(`${name} not found`);
@@ -324,7 +324,7 @@ class Dungeon {
     }
     const newDungeon = new Dungeon(name, difficulty);
     console.log(
-      `Dungeon created: ${newDungeon.name} (${newDungeon.difficulty}) - ID: ${newDungeon.id}`
+      `Dungeon created: ${newDungeon.name} (${newDungeon.difficulty}) - ID: ${newDungeon.id}`,
     );
   }
 
@@ -347,7 +347,7 @@ class Dungeon {
 
   static findByDifficulty(difficulty) {
     const filteredDiff = this.activeDungeons.filter(
-      (d) => d.difficulty === difficulty
+      (d) => d.difficulty === difficulty,
     );
 
     if (filteredDiff.length === 0) {
@@ -375,7 +375,186 @@ dungeonDetails.forEach(([name, diff]) => {
 
 console.log(`Active Dungeons: ${Dungeon.getActiveCount()}`);
 console.log(
-  `Hard Dungeon: ${Dungeon.findByDifficulty(difficulty.HARD).length}`
+  `Hard Dungeon: ${Dungeon.findByDifficulty(difficulty.HARD).length}`,
 );
 Dungeon.closeInstance(1);
 console.log(`Active Dungeons: ${Dungeon.getActiveCount()}`);
+
+// Problem 9: Loot Rarity System
+class Item {
+  static RARITY_NAMES = {
+    COMMON: 1,
+    UNCOMMON: 2,
+    RARE: 3,
+    LEGENDARY: 4,
+  };
+
+  static ITEM_NAMES = {
+    commonItems: [
+      "Rusty Key",
+      "Cloth Cap",
+      "Old Boot",
+      "Stone Pebble",
+      "Iron Bolt",
+      "Stick",
+    ],
+    uncommonItems: [
+      "Steel Blade",
+      "Oak Shield",
+      "Silk Tunic",
+      "Iron Ring",
+      "Boar Hide",
+      "Bronze Cup",
+    ],
+    rareItems: [
+      "Jade Idol",
+      "Soul Gem",
+      "Frost Bow",
+      "Rune Plate",
+      "Void Pearl",
+      "Fire Wand",
+    ],
+    legendaryItems: [
+      "Excalibur",
+      "Dragon Eye",
+      "Star Forge",
+      "Aegis Wing",
+      "Sun Scepter",
+      "Titan Belt",
+    ],
+  };
+  constructor(name, rarity, value) {
+    this.name = name;
+    this.rarity = rarity;
+    this.value = value;
+  }
+
+  // Static Methods
+  static genRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  static generateLoot(rarityLevel) {
+    const dropNum = this.genRandomInt(0, 100);
+    switch (rarityLevel) {
+      case 1: // COMMON
+        console.log(
+          `Attempting ${Object.keys(this.RARITY_NAMES)[rarityLevel - 1]} Loot`,
+        );
+        if (dropNum < 50) {
+          // 50% Drop Rate
+          const randItemName = this.genRandomInt(
+            0,
+            this.ITEM_NAMES.commonItems.length - 1,
+          );
+          const randGold = this.genRandomInt(10, 20); // 10-20 gold
+          console.log(
+            `Dropped: ${this.ITEM_NAMES.commonItems[randItemName]} (Common) - ${randGold} gold`,
+          );
+          return new Item(this.ITEM_NAMES.commonItems[randItemName],"Common",randGold);
+        } else {
+          console.log("No drop!");
+        }
+        break;
+
+      case 2: // UNCOMMON
+        console.log(
+          `Attempting ${Object.keys(this.RARITY_NAMES)[rarityLevel - 1]} Loot`,
+        );
+        if (dropNum < 30) {
+          // 30% Drop Rate
+          const randItemName = this.genRandomInt(
+            0,
+            this.ITEM_NAMES.uncommonItems.length - 1,
+          );
+          const randGold = this.genRandomInt(50, 100); // 50-100 gold
+          console.log(
+            `Dropped: ${this.ITEM_NAMES.uncommonItems[randItemName]} (Uncommon) - ${randGold} gold`,
+          );
+          return new Item(this.ITEM_NAMES.uncommonItems[randItemName],"Uncommon",randGold);
+        } else {
+          console.log("No drop!");
+        }
+        break;
+
+      case 3: // RARE
+        console.log(
+          `Attempting ${Object.keys(this.RARITY_NAMES)[rarityLevel - 1]} Loot`,
+        );
+        if (dropNum < 15) {
+          // 15% Drop Rate
+          const randItemName = this.genRandomInt(
+            0,
+            this.ITEM_NAMES.rareItems.length - 1,
+          );
+          const randGold = this.genRandomInt(200, 500); // 200-500 gold
+          console.log(
+            `Dropped: ${this.ITEM_NAMES.rareItems[randItemName]} (Rare) - ${randGold} gold`,
+          );
+          return new Item(this.ITEM_NAMES.rareItems[randItemName],"Rare",randGold);
+        } else {
+          console.log("No drop!");
+        }
+        break;
+
+      case 4: // LEGENDARY
+        console.log(
+          `Attempting ${Object.keys(this.RARITY_NAMES)[rarityLevel - 1]} Loot`,
+        );
+        if (dropNum < 5) {
+          // 5% Drop Rate
+          const randItemName = this.genRandomInt(
+            0,
+            this.ITEM_NAMES.legendaryItems.length - 1,
+          );
+          const randGold = this.genRandomInt(1000, 5000); // 1,000 - 5,000 gold
+          console.log(
+            `Dropped: ${this.ITEM_NAMES.legendaryItems[randItemName]} (Legendary) - ${randGold} gold`,
+          );
+        } else {
+          console.log("No drop!");
+        }
+        break;
+
+      default:
+        console.log("Invalid Rarity Level");
+    }
+  }
+}
+
+titleLog("Generated Loot Details");
+Item.generateLoot(Item.RARITY_NAMES.COMMON);
+Item.generateLoot(Item.RARITY_NAMES.LEGENDARY);
+Item.generateLoot(Item.RARITY_NAMES.RARE);
+
+// Problem 10: Party Composition Analyzer
+class Member { 
+  constructor(name,role,powerLevel) {
+    this.name = name;
+    this.role = role;
+    this.powerLevel = powerLevel;
+  }
+}
+
+class Party {
+  // Static properties
+  static MAX_PARTY_SIZE = 4;
+  static REQUIRED_ROLES = ["Tank","Healer","DPS"];
+
+  constructor(members) {
+    this.members = members; // arr of member objects
+  }
+
+  // Static Methods
+  static isBalanced(members) {
+    // TODO: Implement balance checking code
+  }
+
+  static calculateAveragePower(members) {
+    // TODO: Implement calculation logic
+  }
+
+  static recommendRole(members) {
+    // TODO: implement recommendation logic
+  }
+}
