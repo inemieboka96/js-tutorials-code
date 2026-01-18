@@ -589,7 +589,7 @@ class Party {
         return `Party needs: ${requiredRole}`;
       }
     }
-    return "Party is Balanced"
+    return "Party is Balanced";
   }
 }
 titleLog("Party Details");
