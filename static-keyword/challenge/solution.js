@@ -380,6 +380,7 @@ console.log(
 Dungeon.closeInstance(1);
 console.log(`Active Dungeons: ${Dungeon.getActiveCount()}`);
 
+// TODO: Implement better solution
 // Problem 9: Loot Rarity System
 class Item {
   static RARITY_NAMES = {
@@ -451,7 +452,11 @@ class Item {
           console.log(
             `Dropped: ${this.ITEM_NAMES.commonItems[randItemName]} (Common) - ${randGold} gold`,
           );
-          return new Item(this.ITEM_NAMES.commonItems[randItemName],"Common",randGold);
+          return new Item(
+            this.ITEM_NAMES.commonItems[randItemName],
+            "Common",
+            randGold,
+          );
         } else {
           console.log("No drop!");
         }
@@ -471,7 +476,11 @@ class Item {
           console.log(
             `Dropped: ${this.ITEM_NAMES.uncommonItems[randItemName]} (Uncommon) - ${randGold} gold`,
           );
-          return new Item(this.ITEM_NAMES.uncommonItems[randItemName],"Uncommon",randGold);
+          return new Item(
+            this.ITEM_NAMES.uncommonItems[randItemName],
+            "Uncommon",
+            randGold,
+          );
         } else {
           console.log("No drop!");
         }
@@ -491,7 +500,11 @@ class Item {
           console.log(
             `Dropped: ${this.ITEM_NAMES.rareItems[randItemName]} (Rare) - ${randGold} gold`,
           );
-          return new Item(this.ITEM_NAMES.rareItems[randItemName],"Rare",randGold);
+          return new Item(
+            this.ITEM_NAMES.rareItems[randItemName],
+            "Rare",
+            randGold,
+          );
         } else {
           console.log("No drop!");
         }
@@ -528,8 +541,8 @@ Item.generateLoot(Item.RARITY_NAMES.LEGENDARY);
 Item.generateLoot(Item.RARITY_NAMES.RARE);
 
 // Problem 10: Party Composition Analyzer
-class Member { 
-  constructor(name,role,powerLevel) {
+class Member {
+  constructor(name, role, powerLevel) {
     this.name = name;
     this.role = role;
     this.powerLevel = powerLevel;
@@ -539,22 +552,74 @@ class Member {
 class Party {
   // Static properties
   static MAX_PARTY_SIZE = 4;
-  static REQUIRED_ROLES = ["Tank","Healer","DPS"];
+  static REQUIRED_ROLES = ["Tank", "Healer", "DPS"];
 
-  constructor(members) {
-    this.members = members; // arr of member objects
+  constructor(name, members) {
+    //Party size validation
+    if (members.length > Party.MAX_PARTY_SIZE)
+      throw new Error("Too Many Members in the party");
+    this.name = name; // Party Name
+    this.members = members; // Arr of Member objects
   }
 
   // Static Methods
   static isBalanced(members) {
-    // TODO: Implement balance checking code
+    // Create an arr of just the member's roles
+    const currentPartyRoles = members.map(member => member.role);
+    // Checks if all required roles are present in the party
+    const hasAllRequiredRoles = this.REQUIRED_ROLES.every(requiredRole => currentPartyRoles.includes(requiredRole));
+    return hasAllRequiredRoles ? "Yes" : "No";
   }
 
   static calculateAveragePower(members) {
-    // TODO: Implement calculation logic
+    // Edge Case: No Members
+    if (members.length === 0) return 0;
+
+    const totalPower = members.reduce(
+      (total, member) => total + member.powerLevel,
+      0,
+    );
+    return totalPower / members.length;
   }
 
   static recommendRole(members) {
-    // TODO: implement recommendation logic
+    const currentPartyRoles = members.map(member => member.role);
+    for(const requiredRole of this.REQUIRED_ROLES) {
+      if(!currentPartyRoles.includes(requiredRole)) {
+        return `Party needs: ${requiredRole}`;
+      }
+    }
+    return "Party is Balanced"
   }
 }
+titleLog("Party Details");
+
+// A high-level, balanced party
+const fellowshipMembers = [
+  new Member("Aragorn", "Tank", 95),
+  new Member("Gandalf", "Healer", 80),
+  new Member("Legolas", "DPS", 75),
+  new Member("Gimli", "DPS", 90)
+];
+
+// A lower-level party that is currently missing a Tank
+const newbieSquadMembers = [
+  new Member("Pippin", "DPS", 40),
+  new Member("Sam", "Tank", 50)
+];
+
+const fellowship = new Party("The Fellowship",fellowshipMembers);
+const newbieSquad = new Party("Newbie Squad",newbieSquadMembers);
+// Fellowship Party Stats
+console.log(`Party analysis for "${fellowship.name}"`);
+console.log(`Size: ${fellowship.members.length}/${Party.MAX_PARTY_SIZE}`);
+console.log(`Average Power: ${Party.calculateAveragePower(fellowshipMembers)}`);
+console.log(`Recommendation: ${Party.recommendRole(fellowshipMembers)}`);
+
+console.log(``);
+
+// Newbie Squad Party Stats
+console.log(`Party analysis for "${newbieSquad.name}"`);
+console.log(`Size: ${newbieSquad.members.length}/${Party.MAX_PARTY_SIZE}`);
+console.log(`Average Power: ${Party.calculateAveragePower(newbieSquadMembers)}`);
+console.log(`Recommendation: ${Party.recommendRole(newbieSquadMembers)}`);
