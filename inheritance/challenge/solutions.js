@@ -158,38 +158,94 @@ med9.heal();
 // Problem 4 - Spaceship Upgrades System
 
 class Spaceship {
-  // Static Properties
-  static repairRange = [];
+  // Point Ranges
+  static HULL_POINTS = {
+    // HP
+    BASE: { min: 50, max: 75 },
+    FIGHTER: { min: 50, max: 100 },
+    CRUISER: { min: 200, max: 500 },
+    BATTLESHIP: { min: 800, max: 2000 },
+  };
+
+  static MAX_SPEED_RANGE = {
+    // km/s
+    BASE: { min: 1250, max: 5000 },
+    FIGHTER: { min: 7000, max: 10000 },
+    CRUISER: { min: 3000, max: 6000 },
+    BATTLESHIP: { min: 1000, max: 2000 },
+  };
+
+  static REPAIR_RANGE = {
+    // seconds
+    BASE: { shield: 30, hull: 60 },
+    FIGHTER: { shield: 15, hull: 15 },
+    CRUISER: { shield: 20, hull: 30 },
+    BATTLESHIP: { shield: 30, hull: 45 },
+  };
 
   constructor(name, hull, shield, weapons) {
-    // Basic validation
-    if (typeof name !== "string" || name.trim() === "") {
-      throw new TypeError("Ship name must be a non-empty string");
-    }
-
-    if (typeof hull !== "number" || hull < 0) {
-      throw new RangeError("Hull must be a number >= 0");
-    }
-
-    if (typeof shield !== "number" || shield < 0 || shield > 100) {
-      throw new RangeError("Shield must be between 0 and 100");
-    }
-
-    if (!Array.isArray(weapons)) {
-      throw new TypeError("Weapons must be an array");
-    }
+    validateShipConstructor({ name, hull, shield, weapons, type: "BASE" });
 
     this.name = name;
-    this.hull = hull; // 50 - 2,000HP
-    this.shield = shield; // 0–100 (percentage)
-    this.weapons = weapons; // Array
-    this.maxSpeed = 5000; // 2,000 - 10,000km/s
+    this.hull = hull;
+    this.shield = shield;
+    this.weapons = weapons;
+
+    const { min, max } = Spaceship.MAX_SPEED_RANGE.BASE;
+    this.maxSpeed = Math.round(Math.random() * (max - min) + min);
+
     this.isUnderRepair = false;
   }
 
   // Helper Methods
   static isRepairing(spaceship) {
     return spaceship.isUnderRepair;
+  }
+  // Constructor Validation
+  static validateShipConstructor({
+    name,
+    hull,
+    shield,
+    weapons,
+    type = "BASE",
+  }) {
+    // Validate type exists in your ranges
+    if (!Spaceship.HULL_POINTS[type] || !Spaceship.MAX_SPEED_RANGE[type]) {
+      throw new Error(`Invalid ship type "${type}"`);
+    }
+
+    // Name
+    if (typeof name !== "string" || name.trim() === "") {
+      throw new TypeError("Ship name must be a non-empty string");
+    }
+
+    // Hull
+    if (typeof hull !== "number" || Number.isNaN(hull)) {
+      throw new TypeError("Hull must be a valid number");
+    }
+
+    const { min: hullMin, max: hullMax } = Spaceship.HULL_POINTS[type];
+    if (hull < hullMin || hull > hullMax) {
+      throw new RangeError(
+        `${type} hull must be between ${hullMin} and ${hullMax}`,
+      );
+    }
+
+    // Shield
+    if (typeof shield !== "number" || Number.isNaN(shield)) {
+      throw new TypeError("Shield must be a valid number");
+    }
+
+    if (shield < 0 || shield > 100) {
+      throw new RangeError("Shield must be between 0 and 100");
+    }
+
+    // Weapons
+    if (!Array.isArray(weapons)) {
+      throw new TypeError("Weapons must be an array");
+    }
+
+    return true;
   }
 
   takeDamage(amount) {
@@ -224,28 +280,81 @@ class Spaceship {
   }
 
   repair() {
+    // Edge Case: Already under repair
+    if (this.isUnderRepair) {
+      throw new Error(`[ ${this.name} is already under repair ]`);
+    }
+    // Edge Case: Completely destroyed ship
+    if (this.hull <= 0) {
+      throw new Error(`[ ${this.name} is destroyed!! ]`);
+    }
+
+    const { min, max } = Spaceship.HULL_POINTS.BASE; // Get appropriate range
     this.isUnderRepair = true; // Update repair status
 
-    const shieldRepairTime = 25 * 1000;
-    const hullRepairTime = 25 * 1000;
+    const shieldRepairTime = Spaceship.REPAIR_RANGE.BASE.shield * 1000;
+    const hullRepairTime = Spaceship.REPAIR_RANGE.BASE.hull * 1000;
 
-    setTimeout(() => this.shield = 100,shieldRepairTime);
-    setTimeout(() => this.hull = 100,shieldRepairTime);
+    let shieldDone = false;
+    let hullDone = false;
 
-    this.isUnderRepair = false; // Update repair status
+    // Helper Function
+    const finishRepair = () => {
+      if (shieldDone && hullDone) {
+        this.isUnderRepair = false;
+        console.log(
+          `${this.name} has been repaired. Shield: ${this.shield}%. Hull: ${this.hull}HP`,
+        );
+      }
+    };
+    // Shield Repair
+    setTimeout(() => {
+      this.shield = 100;
+      shieldDone = true;
+      finishRepair();
+    }, shieldRepairTime);
+
+    // Hull Repair
+    setTimeout(() => {
+      const repairedHull = Math.round(Math.random() * (max - min) + min);
+      // Ensured hull points aren't lower than the OG value before repair
+      this.hull = Math.max(this.hull, repairedHull);
+      hullDone = true;
+      finishRepair();
+    }, hullRepairTime);
+
+    console.log(`[ ${this.name} repair started ]`);
   }
 }
 
 class Fighter extends Spaceship {
-  // High speed, Low Hull
+  constructor(name, hull, shield, weapons) {
+    validateShipConstructor({ name, hull, shield, weapons, type: "FIGHTER" });
+    super(name, hull, shield, weapons);
+
+    const { min, max } = Spaceship.MAX_SPEED_RANGE.FIGHTER;
+    this.maxSpeed = Math.round(Math.random() * (max - min) + min);
+  }
 }
 
 class Cruiser extends Spaceship {
-  // Balanced
+  constructor(name, hull, shield, weapons) {
+    validateShipConstructor({ name, hull, shield, weapons, type: "CRUISER" });
+    super(name, hull, shield, weapons);
+
+    const { min, max } = Spaceship.MAX_SPEED_RANGE.CRUISER;
+    this.maxSpeed = Math.round(Math.random() * (max - min) + min);
+  }
 }
 
 class Battleship extends Spaceship {
-  // High Hull, Slow
+  constructor(name, hull, shield, weapons) {
+    validateShipConstructor({ name, hull, shield, weapons, type: "BATTLESHIP" });
+    super(name, hull, shield, weapons);
+
+    const { min, max } = Spaceship.MAX_SPEED_RANGE.BATTLESHIP;
+    this.maxSpeed = Math.round(Math.random() * (max - min) + min);
+  }
 }
 
 // Advanced
