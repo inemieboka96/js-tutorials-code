@@ -248,6 +248,11 @@ class Spaceship {
     return true;
   }
 
+  static damageLog(attacker, target, specialMove) {
+    console.log(`[${attacker} attacks ${target} with ${specialMove}]`);
+  }
+
+  // Instance Methods
   takeDamage(amount) {
     // Validate damage input
     if (typeof amount !== "number" || Number.isNaN(amount)) {
@@ -325,6 +330,29 @@ class Spaceship {
 
     console.log(`[ ${this.name} repair started ]`);
   }
+
+  getStatus() {
+    const healthPercent =
+      this.hull > 0
+        ? ((this.hull / Spaceship.HULL_POINTS.BATTLESHIP.max) * 100).toFixed(1)
+        : 0;
+
+    const statusEmoji =
+      this.hull <= 0
+        ? "☠️ DESTROYED"
+        : this.isUnderRepair
+          ? "🛠️ REPAIRING"
+          : "🚀 ACTIVE";
+
+    return `
+--- SHIP STATUS: ${this.name} ---
+Status:  ${statusEmoji}
+Hull:    ${this.hull} HP
+Shield:  ${this.shield}%
+Speed:   ${this.maxSpeed} km/s
+Repair:  ${this.isUnderRepair ? "In Progress..." : "Ready"}
+----------------------------`.trim();
+  }
 }
 
 class Fighter extends Spaceship {
@@ -334,6 +362,33 @@ class Fighter extends Spaceship {
 
     const { min, max } = Spaceship.MAX_SPEED_RANGE.FIGHTER;
     this.maxSpeed = Math.round(Math.random() * (max - min) + min);
+  }
+
+  // Fighter Special Attacks
+  afterburnBlitz(target) {
+    // Formula: Base Damage + (maxSpeed/1000);
+    // Base Damage: 15-25
+    const damage = Math.round(Math.random() * (25 - 15) + 15);
+    damage += target.maxSpeed / 1000;
+    target.takeDamage(damage);
+    Spaceship.damageLog(this.name, target.name, "Afterburn Blitz");
+    console.log(target.getStatus());
+  }
+
+  piercingThrust(target) {
+    // Formula: Base Damage * 1.5
+    // Base Damage
+    const damage = 20;
+    if (target.shield >= 50) {
+      damage *= 1.5; // Apply 1.5x multiplier
+      target.takeDamage(damage);
+      Spaceship.damageLog(this.name, target.name, "Afterburn Blitz");
+      console.log(target.getStatus());
+    } else {
+      target.takeDamage(damage);
+      Spaceship.damageLog(this.name, target.name, "Afterburn Blitz");
+      console.log(target.getStatus());
+    }
   }
 }
 
@@ -349,7 +404,13 @@ class Cruiser extends Spaceship {
 
 class Battleship extends Spaceship {
   constructor(name, hull, shield, weapons) {
-    validateShipConstructor({ name, hull, shield, weapons, type: "BATTLESHIP" });
+    validateShipConstructor({
+      name,
+      hull,
+      shield,
+      weapons,
+      type: "BATTLESHIP",
+    });
     super(name, hull, shield, weapons);
 
     const { min, max } = Spaceship.MAX_SPEED_RANGE.BATTLESHIP;
