@@ -158,6 +158,7 @@ med9.heal();
 // Problem 4 - Spaceship Upgrades System
 
 class Spaceship {
+  static SHIP_TYPES = ["BASE", "FIGHTER", "CRUISER", "BATTLESHIP"];
   // Point Ranges
   static HULL_POINTS = {
     // HP
@@ -182,16 +183,22 @@ class Spaceship {
     CRUISER: { shield: 20, hull: 30 },
     BATTLESHIP: { shield: 30, hull: 45 },
   };
-
-  constructor(name, hull, shield, weapons) {
-    validateShipConstructor({ name, hull, shield, weapons, type: "BASE" });
+  // Base Constructor
+  constructor(name, hull, shield, weapons, type = Spaceship.SHIP_TYPES[0]) {
+    Spaceship.validateShipConstructor({
+      name,
+      hull,
+      shield,
+      weapons,
+      type,
+    });
 
     this.name = name;
     this.hull = hull;
     this.shield = shield;
     this.weapons = weapons;
 
-    const { min, max } = Spaceship.MAX_SPEED_RANGE.BASE;
+    const { min, max } = Spaceship.MAX_SPEED_RANGE[type];
     this.maxSpeed = Math.round(Math.random() * (max - min) + min);
 
     this.isUnderRepair = false;
@@ -250,6 +257,89 @@ class Spaceship {
 
   static damageLog(attacker, target, specialMove) {
     console.log(`[${attacker} attacks ${target} with ${specialMove}]`);
+  }
+
+  static calculateBaseDamage(min, max) {
+    return Math.round(Math.random() * (max - min) + min);
+  }
+
+  // Combat Simulator ⚔️
+  static simulateCombat(ship1, ship2) {
+    console.log(
+      `--- ⚔️ COMBAT INITIATED: ${ship1.name} VS ${ship2.name} ⚔️ ---`,
+    );
+
+    let round = 1; // Start at Round 1
+
+    // Combat loop: continues until one ship is destroyed
+    while (ship1.hull > 0 && ship2.hull > 0) {
+      console.log(`\n--- ROUND ${round} ---`);
+
+      // Helper to execute a random special attack from a ship's available methods
+      const executeTurn = (attacker, target) => {
+        // Edge Case: Attacker is under repair and skips turn
+        if (attacker.isUnderRepair) {
+          console.log(
+            `[ ${attacker.name} is busy repairing and skips the attack! ]`,
+          );
+          return;
+        }
+
+        // Get all special attack methods (excluding standard class methods/properties)
+        const specialAttacks = Object.getOwnPropertyNames(
+          Object.getPrototypeOf(attacker),
+        ).filter(
+          (prop) =>
+            typeof attacker[prop] === "function" &&
+            prop !== "constructor" &&
+            prop !== "takeDamage" &&
+            prop !== "repair" &&
+            prop !== "getStatus",
+        );
+
+        // Edge Case: Ship has no special attacks (Base Spaceship)
+        if (specialAttacks.length === 0) {
+          console.log(`[ ${attacker.name} has no weapons systems online! ]`);
+          return;
+        }
+
+        // Pick a random attack and fire
+        const randomAttack =
+          specialAttacks[Math.floor(Math.random() * specialAttacks.length)];
+
+        // Nova Cannon returns a string, others log internally
+        const battleReport = attacker[randomAttack](target); // i.e. attacker.randomAttack(target)
+        if (battleReport) console.log(battleReport);
+      };
+
+      // Ship 1 Attacks
+      executeTurn(ship1, ship2);
+
+      // Check if Ship 2 was destroyed before it can retaliate
+      if (ship2.hull <= 0) break;
+
+      // Ship 2 Attacks
+      executeTurn(ship2, ship1);
+
+      round++;
+
+      // Edge Case: Infinite loop prevention (Safety)
+      if (round > 50) {
+        console.log("--- ⚠️ COMBAT STALEMATE: Fuel Exhausted ---");
+        break;
+      }
+    }
+
+    // Final Results
+    console.log("\n==============================");
+    if (ship1.hull > 0 && ship2.hull <= 0) {
+      console.log(`🏆 VICTOR: ${ship1.name} wins the battle!`);
+    } else if (ship2.hull > 0 && ship1.hull <= 0) {
+      console.log(`🏆 VICTOR: ${ship2.name} wins the battle!`);
+    } else {
+      console.log("💀 MUTUAL DESTRUCTION: No survivors.");
+    }
+    console.log("==============================");
   }
 
   // Instance Methods
@@ -357,65 +447,184 @@ Repair:  ${this.isUnderRepair ? "In Progress..." : "Ready"}
 
 class Fighter extends Spaceship {
   constructor(name, hull, shield, weapons) {
-    validateShipConstructor({ name, hull, shield, weapons, type: "FIGHTER" });
-    super(name, hull, shield, weapons);
+    super(name, hull, shield, weapons, Spaceship.SHIP_TYPES[1]);
 
     const { min, max } = Spaceship.MAX_SPEED_RANGE.FIGHTER;
     this.maxSpeed = Math.round(Math.random() * (max - min) + min);
   }
 
-  // Fighter Special Attacks
+  // --- FIGHTER SPECIAL ATTACKS ---
+  // Formula: Damage = (Random 15-25) + (maxSpeed / 1000)
   afterburnBlitz(target) {
-    // Formula: Base Damage + (maxSpeed/1000);
-    // Base Damage: 15-25
-    const damage = Math.round(Math.random() * (25 - 15) + 15);
-    damage += target.maxSpeed / 1000;
-    target.takeDamage(damage);
+    // Edge Case: Attacker is destroyed
+    if (this.hull <= 0) return;
+    // Edge Case: Target is already destroyed
+    if (target.hull <= 0)
+      return console.log(`[ ${target.name} is already stardust ]`);
+
+    const damage = Spaceship.calculateBaseDamage(15, 25) + this.maxSpeed / 1000;
+
+    const result = target.takeDamage(damage);
     Spaceship.damageLog(this.name, target.name, "Afterburn Blitz");
-    console.log(target.getStatus());
+    console.log(result);
   }
 
+  // Formula: Damage = 20 (Multiplier: 1.5x if target shield >= 50)
   piercingThrust(target) {
-    // Formula: Base Damage * 1.5
-    // Base Damage
-    const damage = 20;
+    // Edge Case: Attacker is destroyed
+    if (this.hull <= 0) return;
+
+    let damage = 20;
+    // Edge Case: High shield penetration logic
     if (target.shield >= 50) {
-      damage *= 1.5; // Apply 1.5x multiplier
-      target.takeDamage(damage);
-      Spaceship.damageLog(this.name, target.name, "Afterburn Blitz");
-      console.log(target.getStatus());
-    } else {
-      target.takeDamage(damage);
-      Spaceship.damageLog(this.name, target.name, "Afterburn Blitz");
-      console.log(target.getStatus());
+      damage *= 1.5;
     }
+
+    const result = target.takeDamage(damage);
+    Spaceship.damageLog(this.name, target.name, "Piercing Thrust");
+    console.log(result);
   }
 }
 
 class Cruiser extends Spaceship {
   constructor(name, hull, shield, weapons) {
-    validateShipConstructor({ name, hull, shield, weapons, type: "CRUISER" });
-    super(name, hull, shield, weapons);
+    super(name, hull, shield, weapons, Spaceship.SHIP_TYPES[2]);
 
     const { min, max } = Spaceship.MAX_SPEED_RANGE.CRUISER;
     this.maxSpeed = Math.round(Math.random() * (max - min) + min);
+  }
+  // --- CRUISER SPECIAL ATTACKS ---
+  // Formula: Damage = Random 30-45 (Effect: Disrupts target repair status)
+  ionPulseWave(target) {
+    // Edge Case: Target is already disabled/repairing
+    const wasRepairing = target.isUnderRepair;
+
+    const damage = Spaceship.calculateBaseDamage(30, 45);
+    const result = target.takeDamage(damage);
+
+    // Disrupt repair systems
+    target.isUnderRepair = false;
+
+    Spaceship.damageLog(this.name, target.name, "Ion Pulse Wave");
+    if (wasRepairing)
+      console.log(`[ Alert: ${target.name}'s repair sequence interrupted! ]`);
+    console.log(result);
+  }
+
+  // Formula: Damage = (10 * missilesLanded[1-5]) - (targetShield / 20)
+  missileBarrage(target) {
+    // Edge Case: Attacker low on hull (accuracy penalty)
+    const accuracyMod = this.hull < 50 ? 0.5 : 1;
+    const missilesLanded = Math.round(
+      Spaceship.calculateBaseDamage(1, 5) * accuracyMod,
+    );
+
+    // Edge Case: Zero missiles land
+    if (missilesLanded === 0)
+      return console.log(`[ ${this.name}'s missiles missed target! ]`);
+
+    const damage = 10 * missilesLanded - target.shield / 20;
+    const result = target.takeDamage(Math.max(0, damage));
+
+    Spaceship.damageLog(
+      this.name,
+      target.name,
+      `Missile Barrage (${missilesLanded} hits)`,
+    );
+    console.log(result);
   }
 }
 
 class Battleship extends Spaceship {
   constructor(name, hull, shield, weapons) {
-    validateShipConstructor({
-      name,
-      hull,
-      shield,
-      weapons,
-      type: "BATTLESHIP",
-    });
-    super(name, hull, shield, weapons);
+    super(name, hull, shield, weapons, Spaceship.SHIP_TYPES[3]);
 
     const { min, max } = Spaceship.MAX_SPEED_RANGE.BATTLESHIP;
     this.maxSpeed = Math.round(Math.random() * (max - min) + min);
   }
+
+  // --- BATTLESHIP SPECIAL ATTACKS ---
+  // Formula: Damage = (Random 40-60) + (currentHull / 100) (Effect: Bypasses shields)
+  orbitalRailgun(target) {
+    // Edge Case: Target has no hull left
+    if (target.hull <= 0) return;
+
+    const damage = Spaceship.calculateBaseDamage(40, 60) + this.hull / 100;
+
+    // Edge Case: Shield Bypass Logic
+    // Directly subtracting from hull as per original intent
+    target.hull = Math.max(0, target.hull - damage);
+
+    Spaceship.damageLog(
+      this.name,
+      target.name,
+      "Orbital Railgun (Shields Bypassed)",
+    );
+    console.log(
+      `[ ${target.name} Hull directly impacted: ${target.hull} HP remaining ]`,
+    );
+  }
+
+  // Formula: Damage = (50 * (currentHull / maxBattleshipHull)) + (consumedShield * 1.5)
+  novaCannon(target) {
+    // Edge Case: Ship destroyed
+    if (this.hull <= 0) return "🚨 Cannot fire: Ship destroyed!";
+    // Edge Case: Insufficient shields to fire
+    if (this.shield <= 10)
+      return "🚨 Nova Cannon requires at least 10% shield to prime!";
+
+    const basePower = 50;
+    const integrity = this.hull / Spaceship.HULL_POINTS.BATTLESHIP.max;
+    const shieldFuel = this.shield;
+
+    this.shield = 0; // Drain fuel
+
+    const totalDamage = Math.round(basePower * integrity + shieldFuel * 1.5);
+    const result = target.takeDamage(totalDamage);
+
+    Spaceship.damageLog(this.name, target.name, "NOVA CANNON");
+    return `
+--- 🛰️ NOVA CANNON ACTIVATED ---
+[ Energy compression: ${(integrity * 100).toFixed(0)}% ]
+[ Shield fuel consumed: ${shieldFuel} units ]
+[ TOTAL BLAST RADIUS: ${totalDamage} DMG ]
+${result}
+-------------------------------`.trim();
+  }
 }
+
+titleLog("Spaceship Logs");
+
+// 1. The Speedy Fighter 🏎️💨
+const interceptor = new Fighter(
+  "Star-Slayer",
+  70, // Hull (Range: 50-100)
+  100, // Shield (Range: 0-100)
+  ["Laser Cannons", "Afterburners"],
+);
+
+// 2. The Tactical Cruiser 🛰️📡
+const vanguard = new Cruiser(
+  "Nebula-Guard",
+  350, // Hull (Range: 200-500)
+  80, // Shield (Range: 0-100)
+  ["Ion Pulse", "Missile Pods"],
+);
+
+// 3. The Heavy Battleship 🏢💥
+const titan = new Battleship(
+  "Galactic-Behemoth",
+  1500, // Hull (Range: 800-2000)
+  90, // Shield (Range: 0-100)
+  ["Orbital Railgun", "Nova Cannon"],
+);
+
+// --- Quick Status Check ---
+console.log(interceptor.getStatus());
+console.log(vanguard.getStatus());
+console.log(titan.getStatus());
+
+// Battle
+Spaceship.simulateCombat(vanguard, titan);
 
 // Advanced
