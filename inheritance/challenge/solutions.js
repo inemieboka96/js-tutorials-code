@@ -592,7 +592,7 @@ ${result}
 -------------------------------`.trim();
   }
 }
-
+// Console Logs
 titleLog("Spaceship Logs");
 
 // 1. The Speedy Fighter 🏎️💨
@@ -626,5 +626,49 @@ console.log(titan.getStatus());
 
 // Battle
 Spaceship.simulateCombat(vanguard, titan);
+
+// Problem 5 - Planetary Colony Management
+
+class Colony {
+  constructor(population = 0, resources = {}, morale = 0) {
+    this.population = population;
+    this.resources = {
+      // Default properties
+      food: resources.food ?? 0,
+      minerals: resources.minerals ?? 0,
+      technology: resources.technology ?? 0,
+    };
+    this.morale = morale;
+  }
+  // Methods
+  produce() {
+
+  }
+
+  consume() {
+
+  }
+
+  grow() {
+
+  }
+
+  shareResources() {
+
+  }
+}
+
+// Child Classes
+class MiningColony extends Colony {
+
+}
+
+class ResearchColony extends Colony {
+
+}
+
+class AgriculturalColony extends Colony {
+
+}
 
 // Advanced
