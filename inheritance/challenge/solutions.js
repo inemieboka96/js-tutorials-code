@@ -592,7 +592,7 @@ ${result}
 -------------------------------`.trim();
   }
 }
-
+// Console Logs
 titleLog("Spaceship Logs");
 
 // 1. The Speedy Fighter 🏎️💨
@@ -626,5 +626,136 @@ console.log(titan.getStatus());
 
 // Battle
 Spaceship.simulateCombat(vanguard, titan);
+
+// Problem 5 - Planetary Colony Management
+
+class Colony {
+  // Static Properties
+  static MAX_RESOURCES = {
+    // Total allocated points = 75
+    BASE_COLONY: { food: 25, minerals: 25, technology: 25 },
+    MINING_COLONY: { food: 5, minerals: 40, technology: 30 },
+    RESEARCH_COLONY: { food: 25, minerals: 10, technology: 35 },
+    AGRICULTURAL_COLONY: { food: 50, minerals: 10, technology: 15 },
+  };
+
+  static MAX_CONSUMPTION = Object.fromEntries(
+    Object.entries(Colony.MAX_RESOURCES).map(([colonyType, resources]) => [
+      colonyType,
+      {
+        food: Math.ceil(resources.food * 0.5), // consume up to 50% of max per cycle
+        minerals: Math.ceil(resources.minerals * 0.3), // 30% of max
+        technology: Math.ceil(resources.technology * 0.2), // 20% of max
+      },
+    ]),
+  );
+  // Parent Constructor
+  constructor(population = 0, resources = {}, morale = 0) {
+    this.population = population; // 1,000 - 50,000
+    this.resources = {
+      // Default properties
+      food: resources.food ?? 0,
+      minerals: resources.minerals ?? 0,
+      technology: resources.technology ?? 0,
+    };
+    this.morale = morale; // Max 10
+  }
+  // Methods
+  produce() {
+    // Edge Case: No resources
+    if (!this.resources || Object.keys(this.resources).length === 0) {
+      this.resources = { food: 0, minerals: 0, technology: 0 };
+    }
+
+    // Determine Colony Type
+    const colonyType = this.constructor.name
+      .replace(/COLONY$/i, "_COLONY")
+      .toUpperCase(); // e.g. "BASE_COLONY";
+
+    // Get the specific maxValues for the colony type
+    const maxResources = Colony.MAX_RESOURCES[colonyType];
+
+    // Assign corresponding points
+    const {
+      food: maxFood,
+      minerals: maxMinerals,
+      technology: maxTech,
+    } = maxResources;
+
+    // Generate resource Points
+    const foodPoints = Math.floor(Math.random() * (maxFood + 1));
+    const mineralPoints = Math.floor(Math.random() * (maxMinerals + 1));
+    const techPoints = Math.floor(Math.random() * (maxTech + 1));
+
+    // Add to current
+    this.resources.food += foodPoints;
+    this.resources.minerals += mineralPoints;
+    this.resources.technology += techPoints;
+
+    // Log to Console
+    console.log(
+      `🚀 ${colonyType} Production Report:
+   🍎 Food      : +${foodPoints}
+   ⛏ Minerals  : +${mineralPoints}
+   💡 Technology: +${techPoints}`,
+    );
+  }
+
+  consume() {
+    // Ensure resources exist
+    if (!this.resources) {
+      this.resources = { food: 0, minerals: 0, technology: 0 };
+    }
+
+    // Determine colony type
+    const colonyType = this.constructor.name
+      .replace(/COLONY$/i, "_COLONY")
+      .toUpperCase();
+
+    // Get max consumption values
+    const maxConsumptionPoints = Colony.MAX_CONSUMPTION[colonyType];
+
+    // Subtract resources safely
+    this.resources.food = Math.max(
+      0,
+      this.resources.food - maxConsumptionPoints.food,
+    );
+    this.resources.minerals = Math.max(
+      0,
+      this.resources.minerals - maxConsumptionPoints.minerals,
+    );
+    this.resources.technology = Math.max(
+      0,
+      this.resources.technology - maxConsumptionPoints.technology,
+    );
+
+    // Reduce morale if food runs out
+    if (this.resources.food === 0) {
+      this.morale = Math.max(0, this.morale - 1);
+    }
+
+    // Log consumption with emojis
+    console.log(
+      `🛡 ${colonyType} Consumption Report:
+   🍎 Food      : -${maxConsumptionPoints.food}
+   ⛏ Minerals  : -${maxConsumptionPoints.minerals}
+   💡 Technology: -${maxConsumptionPoints.technology}
+   😟 Morale    : ${this.morale}`,
+    );
+  }
+
+  grow() {
+    // Increase or Decrease Population & Morale based on certain factors
+  }
+  // Resource Sharing System
+  shareResources(colony, resource, points) {}
+}
+
+// Child Classes
+class MiningColony extends Colony {}
+
+class ResearchColony extends Colony {}
+
+class AgriculturalColony extends Colony {}
 
 // Advanced
