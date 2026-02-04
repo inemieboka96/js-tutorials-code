@@ -649,6 +649,17 @@ class Colony {
       },
     ]),
   );
+
+  static THRESHOLDS = Object.fromEntries(
+    Object.entries(Colony.MAX_RESOURCES).map(([colonyType, resources]) => [
+      colonyType,
+      {
+        foodThreshold: Math.floor(resources.food / 2),
+        mineralsThreshold: Math.floor(resources.minerals / 2),
+        technologyThreshold: Math.floor(resources.technology / 2),
+      },
+    ]),
+  );
   // Parent Constructor
   constructor(population = 0, resources = {}, morale = 0) {
     this.population = population; // 1,000 - 50,000
@@ -745,17 +756,154 @@ class Colony {
   }
 
   grow() {
-    // Increase or Decrease Population & Morale based on certain factors
+    // Get Colony Type & Format it
+    const colonyType = this.constructor.name
+      .replace(/COLONY$/i, "_COLONY")
+      .toUpperCase();
+
+    // Edge Case: No resources
+    if (!this.resources) {
+      this.resources = { food: 0, minerals: 0, technology: 0 };
+    }
+
+    // Keep track of starting population & morale
+    const startPopulation = this.population;
+    const startMorale = this.morale;
+
+    // Threshold used to decide if food is "enough"
+    const foodThreshold = Colony.THRESHOLDS[colonyType].foodThreshold;
+
+    // Track Population Changes
+    let foodDeltaPop = 0; // population change due to food
+    let moraleDeltaPop = 0; // population change due to morale
+    let colonyDeltaPop = 0; // population change due to colony type bonus/penalty
+
+    // Track Morale Changes
+    let moraleDelta = 0;
+
+    // 10% of current population
+    const foodPeopleChange = (this.resources.food / 10) * 1000;
+
+    if (this.resources.food >= foodThreshold) {
+      // Food is sufficient: increase population
+      this.population += foodPeopleChange;
+      foodDeltaPop = foodPeopleChange; // positive delta
+    } else {
+      // Food is insufficient: decrease population
+      this.population -= foodPeopleChange;
+      foodDeltaPop = -foodPeopleChange; // -500 (negative delta)
+    }
+
+    // Morale Modifier
+    if (this.morale >= 5) {
+      // Morale boost
+      this.morale += 0.5;
+      moraleDelta += 0.5;
+
+      // Population bonus (10% increase)
+      const bonus = this.population * 0.1;
+      this.population += bonus;
+
+      // Positive delta because this adds population
+      moraleDeltaPop = bonus;
+    } else {
+      // Morale penalty
+      this.morale -= 1;
+      moraleDelta -= 1;
+
+      // Population penalty (25% decrease)
+      const penalty = this.population * 0.25;
+      this.population -= penalty;
+
+      // Negative delta because this removes population
+      // Unary minus converts a positive number into a negative number
+      moraleDeltaPop = -penalty;
+    }
+
+    // Colony Type Modifier
+    if (colonyType === "BASE_COLONY") {
+      // Base population boost
+      const bonus = this.population * 0.05;
+      this.population += bonus;
+      colonyDeltaPop = bonus;
+      // Morale increase
+      this.morale += 0.25;
+      moraleDelta += 0.25;
+    } else if (colonyType === "MINING_COLONY") {
+      // Mining colonies lose a bit of population (harsh conditions)
+      const penalty = this.population * 0.05;
+      this.population -= penalty;
+
+      // Store negative delta for reporting
+      colonyDeltaPop = -penalty;
+
+      this.morale += 0.1;
+      moraleDelta += 0.1;
+    } else if (colonyType === "RESEARCH_COLONY") {
+      // Research colonies gain population moderately
+      const bonus = this.population * 0.1;
+      this.population += bonus;
+      colonyDeltaPop = bonus;
+
+      this.morale += 0.5;
+      moraleDelta += 0.5;
+    } else if (colonyType === "AGRICULTURAL_COLONY") {
+      // Agricultural colonies gain population heavily (food-driven growth)
+      const bonus = this.population * 0.3;
+      this.population += bonus;
+      colonyDeltaPop = bonus;
+
+      this.morale += 1;
+      moraleDelta += 1;
+    }
+
+    // Safeguards
+    this.population = Math.max(0, Math.floor(this.population));
+    this.morale = Math.min(10, Math.max(0, Number(this.morale.toFixed(2))));
+
+    // Store final values
+    const endPopulation = this.population;
+    const endMorale = this.morale;
+
+    const netPopChange = endPopulation - startPopulation;
+    const netMoraleChange = endMorale - startMorale;
+
+    // Growth Report Console Log
+    console.log(
+      `📈 ${colonyType} Growth Report:
+👥 Population: ${startPopulation.toLocaleString()} → ${endPopulation.toLocaleString()} (${netPopChange >= 0 ? "+" : ""}${netPopChange.toLocaleString()})
+🙂 Morale    : ${startMorale} → ${endMorale} (${netMoraleChange >= 0 ? "+" : ""}${netMoraleChange})
+
+🍎 Food: ${this.resources.food} (Threshold: ${foodThreshold})
+   Food Impact     : ${foodDeltaPop >= 0 ? "+" : ""}${Math.floor(foodDeltaPop).toLocaleString()} people
+   Morale Impact   : ${moraleDeltaPop >= 0 ? "+" : ""}${Math.floor(moraleDeltaPop).toLocaleString()} people
+   Colony Modifier : ${colonyDeltaPop >= 0 ? "+" : ""}${Math.floor(colonyDeltaPop).toLocaleString()} people`,
+    ); // If deltas are positive, add a "+" sign
   }
+
   // Resource Sharing System
   shareResources(colony, resource, points) {}
 }
 
 // Child Classes
-class MiningColony extends Colony {}
+class MiningColony extends Colony {
+  constructor(population = 0, morale = 0) {
+    super(population, {}, morale);
+  }
+}
 
-class ResearchColony extends Colony {}
+class ResearchColony extends Colony {
+  constructor(population = 0, morale = 0) {
+    super(population, {}, morale);
+  }
+}
 
-class AgriculturalColony extends Colony {}
+class AgriculturalColony extends Colony {
+  constructor(population = 0, morale = 0) {
+    super(population, {}, morale);
+  }
+}
+
+// Console Logs
 
 // Advanced
