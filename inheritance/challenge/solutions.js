@@ -354,9 +354,9 @@ class Spaceship {
     }
 
     // Optional: keep your original "0-100" rule
-    if (amount > 100) {
-      throw new RangeError("Damage amount has to be between 0-100");
-    }
+    // if (amount > 100) {
+    //   throw new RangeError("Damage amount has to be between 0-100");
+    // }
 
     // If ship is already destroyed
     if (this.hull <= 0) {
@@ -882,7 +882,90 @@ class Colony {
   }
 
   // Resource Sharing System
-  shareResources(colony, resource, points) {}
+  shareResources(receiverColony, resource, points) {
+    // Normalize colony names
+    const senderName = this.constructor.name
+      .replace(/COLONY$/i, "_COLONY")
+      .toUpperCase();
+
+    const receiverName = receiverColony.constructor.name
+      .replace(/COLONY$/i, "_COLONY")
+      .toUpperCase();
+
+    // Edge Case: Invalid receiver colony
+    if (!receiverColony || !receiverColony.resources) {
+      console.error(`❌ Resource Transfer Failed: Invalid receiver colony.`);
+      return;
+    }
+
+    // Edge Case: Invalid resource
+    if (!this.resources || !(resource in this.resources)) {
+      console.error(
+        `❌ Resource Transfer Failed: Invalid resource "${resource}".`,
+      );
+      return;
+    }
+    // Edge Case: Negative points
+    if (points <= 0) {
+      console.error(`❌ Resource Transfer Failed: Points must be positive.`);
+      return;
+    }
+    // Edge Case: Insufficient points
+    if (this.resources[resource] < points) {
+      console.error(
+        `❌ Resource Transfer Failed: ${senderName} lacks sufficient ${resource}.`,
+      );
+      return;
+    }
+
+    // Store pre-transfer values
+    const senderBefore = this.resources[resource];
+    const receiverBefore = receiverColony.resources[resource];
+
+    // Execute transfer
+    this.resources[resource] -= points;
+    receiverColony.resources[resource] += points;
+
+    // Store post-transfer values
+    const senderAfter = this.resources[resource];
+    const receiverAfter = receiverColony.resources[resource];
+
+    // Console Log
+    console.log(
+      `🔄 Resource Transfer Successful:
+🚚 From        : ${senderName}
+📥 To          : ${receiverName}
+📦 Resource    : ${resource.toUpperCase()}
+🔢 Amount      : ${points}
+
+📉 ${senderName} ${resource} : ${senderBefore} → ${senderAfter}
+📈 ${receiverName} ${resource}: ${receiverBefore} → ${receiverAfter}`,
+    );
+  }
+
+  getColonyStatus() {
+    const colonyType = this.constructor.name
+      .replace(/COLONY$/i, "_COLONY")
+      .toUpperCase();
+
+    const maxResources = Colony.MAX_RESOURCES[colonyType];
+
+    const table = `
+╔════════════════════════════════════╗
+║           COLONY STATUS            ║
+╠════════════════════════════════════╣
+║ Type        │ ${colonyType.padEnd(18)} ║
+║ Population  │ ${this.population.toLocaleString().padEnd(18)} ║
+║ Morale      │ ${`${this.morale}/10`.padEnd(18)} ║
+╠═════════════╪══════════════════════╣
+║ 🍎 Food     │ ${`${this.resources.food} / ${maxResources.food}`.padEnd(18)} ║
+║ ⛏ Minerals │ ${`${this.resources.minerals} / ${maxResources.minerals}`.padEnd(18)} ║
+║ 💡 Tech     │ ${`${this.resources.technology} / ${maxResources.technology}`.padEnd(18)} ║
+╚═════════════╧══════════════════════╝
+`.trim();
+
+    return table;
+  }
 }
 
 // Child Classes
@@ -905,5 +988,45 @@ class AgriculturalColony extends Colony {
 }
 
 // Console Logs
+titleLog("Colony Details");
+
+const miningColony = new MiningColony(12000, 6);
+const researchColony = new ResearchColony(9000, 7);
+const agriculturalColony = new AgriculturalColony(15000, 8);
+
+// Initial Colony Status
+console.log(miningColony.getColonyStatus());
+console.log(researchColony.getColonyStatus());
+console.log(agriculturalColony.getColonyStatus());
+
+// Colony Production
+miningColony.produce();
+researchColony.produce();
+agriculturalColony.produce();
+
+console.log(miningColony.getColonyStatus());
+console.log(researchColony.getColonyStatus());
+console.log(agriculturalColony.getColonyStatus());
+
+// Colony Consumption
+miningColony.consume();
+researchColony.consume();
+agriculturalColony.consume();
+
+console.log(miningColony.getColonyStatus());
+console.log(researchColony.getColonyStatus());
+console.log(agriculturalColony.getColonyStatus());
+
+// Colony Growth?
+miningColony.grow();
+researchColony.grow();
+agriculturalColony.grow();
+
+console.log(miningColony.getColonyStatus());
+console.log(researchColony.getColonyStatus());
+console.log(agriculturalColony.getColonyStatus());
+
+// Colony Resource Sharing
+
 
 // Advanced
