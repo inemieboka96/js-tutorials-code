@@ -639,6 +639,7 @@ class Colony {
     AGRICULTURAL_COLONY: { food: 50, minerals: 10, technology: 15 },
   };
 
+  // FIX ME: Turn these into static getters instead
   static MAX_CONSUMPTION = Object.fromEntries(
     Object.entries(Colony.MAX_RESOURCES).map(([colonyType, resources]) => [
       colonyType,
