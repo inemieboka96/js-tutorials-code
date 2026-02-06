@@ -43,3 +43,6 @@ This repository is a curated collection of small, browser-based JavaScript tutor
 
 ---
 Happy learning! Open a folder's `index.html` and press F12 to explore the examples.
+Tip: In VS Code, install the "Live Server" extension and click "Go Live" to serve files quickly.
+
+Tutorial link: https://youtu.be/lfmg-EJ8gm4
